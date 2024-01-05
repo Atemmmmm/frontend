@@ -7,6 +7,26 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+@font-face {
+  font-family: "Jura-VariableFont_wght";
+  font-weight: normal;
+  src: url("./Fonts/Jura-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Kavoon-Regular";
+  font-weight: normal;
+  src: url("./Fonts/Kavoon-Regular.ttf") format("truetype");
+}
+
+body {
+  font-family: "Jura-VariableFont_wght";
+}
+
+body {
+  font-family: "Kavoon-Regular";
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

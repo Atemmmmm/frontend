@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import JoinButon from './Button';
 
 const HeaderWrapper = styled.div`
-  height: 3.5rem;
+  height: 0.05rem;
   align-items: center;
   justify-content: center;
   display: flex;
@@ -17,7 +17,7 @@ const HeaderWrapper = styled.div`
 const Title = styled.h1`
   font-style: normal;
   font-weight: bolder;
-  font-size: 20pt;
+  font-size: 30pt;
   float: left;
   color: white;
   margin-left: 0px;
