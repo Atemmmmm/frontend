@@ -4,6 +4,7 @@ import SignUp from "./Pages/SignUp";
 import Login from "./Pages/Login";
 import Update from "./Pages/Update";
 import Edit from "./Pages/Edit";
+import Chat from "./Pages/Chat";
 
 import './App.css';
 
@@ -15,7 +16,7 @@ function App() {
             <Route path="/SignUp" element = {<SignUp/>}/>
             <Route path="/Update" element = {<Update/>}/>
             <Route path="/Edit" element = {<Edit/>}/>
-          
+            <Route path="/Chat" element = {<Chat/>}/>
           </Routes>
     </BrowserRouter>
     

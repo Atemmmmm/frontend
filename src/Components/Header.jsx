@@ -17,10 +17,11 @@ const HeaderWrapper = styled.div`
 const Title = styled.h1`
   font-style: normal;
   font-weight: bolder;
-  font-size: 20pt;
+  font-size: 30pt;
   float: left;
   color: white;
   margin-left: 0px;
+
   font-family: 'Kavoon', serif;
 `;
 
