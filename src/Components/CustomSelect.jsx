@@ -51,7 +51,8 @@ const Option = styled.li`
   }
 `;
 
-const CustomSelect = () => {
+
+const CustomSelect = (option) => {
     const [currentValue, setCurrentValue] = useState("장르 선택");
     const [showOptions, setShowOptions] = useState(false);
   
@@ -60,22 +61,23 @@ const CustomSelect = () => {
         setCurrentValue(innerText);
       };
     
+    console.log(option);
   
     return (
-    <SelectBox onClick={() => setShowOptions((prev) => !prev)}>
-            <Label>{currentValue}</Label>
-            <SelectOptions show={showOptions}>
-                <Option onClick={handleOnChangeSelectValue}>POP</Option>
-                <Option onClick={handleOnChangeSelectValue}>ROCK</Option>
-                <Option onClick={handleOnChangeSelectValue}>HIPHOP</Option>
-                <Option onClick={handleOnChangeSelectValue}>COUNTRY</Option>
-                <Option onClick={handleOnChangeSelectValue}>CLASSICAL</Option>
-                <Option onClick={handleOnChangeSelectValue}>JAZZ</Option>
-                <Option onClick={handleOnChangeSelectValue}>ELECTRONIC</Option>
-                <Option onClick={handleOnChangeSelectValue}>R & B</Option>
-                <Option onClick={handleOnChangeSelectValue}>BALLAD</Option>
-            </SelectOptions>
-      </SelectBox>
+      <SelectBox onClick={() => setShowOptions((prev) => !prev)}>
+      <Label>{currentValue}</Label>
+      <SelectOptions show={showOptions}>
+        {option.option && option.option.map((data) => (
+          <Option
+            key={data.key}
+            value={data.value}
+            onClick={handleOnChangeSelectValue}
+          >
+            {data.value}
+          </Option>
+        ))}
+      </SelectOptions>
+    </SelectBox>
     );
   };
 

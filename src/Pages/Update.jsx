@@ -81,6 +81,18 @@ const WrapButton = styled.div`
     right: 20%;
     z-index: 1;
 `
+export const OptionsData = [
+  {key: "pop", value: "POP"}, 
+  {key: "rock", value: "ROCK"}, 
+  {key: "hiphop", value: "HIPHOP"},
+  {key: "country", value: "COUNTRY"},
+  {key: "classical", value: "CLASSICAL"},
+  {key: "jazz", value: "JAZZ"}, 
+  {key: "electronic", value: "ELECTRONIC"},
+  {key: "r&b", value: "R&B"},
+  {key: "ballad", value: "BALLAD"}
+];
+
 
 export default function Upload() {
 
@@ -100,7 +112,7 @@ export default function Upload() {
                 <h4>음원 파일을 업로드 하세요.</h4>
             </MusicUploadBox>
             
-            <CustomSelect/>
+            <CustomSelect option={OptionsData}/>
 
             
         </WrapContent>
