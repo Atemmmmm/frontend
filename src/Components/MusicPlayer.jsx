@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
+import { TbPlayerPlay, TbPlayerPause } from "react-icons/tb";
+
 
 const AudioPlayerContainer = styled.div`
   position: relative;
@@ -102,7 +104,7 @@ const AudioPlayer = ({ audioSrc }) => {
   return (
     <AudioPlayerContainer>
       <PlayButton onClick={togglePlay}>
-        {isPlaying ? '⏸️' : '▶'}
+        {isPlaying ? <TbPlayerPause /> : <TbPlayerPlay />}
       </PlayButton>
       <ProgressBarContainer>
         <ProgressBar
