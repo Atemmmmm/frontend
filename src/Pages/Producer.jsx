@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, props } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Header from '../Components/Header';
 import './Album.css'; 
@@ -134,7 +134,6 @@ const ProducerDropdownMenu = styled.ul`
   }
 `;
 
-
 const MenuContainer = styled.div`
 &:hover ${ProducerButton} {
   transform: translateY(300px);
@@ -183,9 +182,18 @@ const AlbumCardContent = styled.div`
 const AlbumName = styled.div`
   font-weight: bold;
   width: 200px;
-  overflow: hidden;  		
   text-overflow: ellipsis;  
   white-space: nowrap; 
+
+  @media (min-width: 481px) {
+    & {
+      animation: ${props => (props.isLong ? 'marquee 10s linear infinite' : 'none')};
+    }
+  }
+
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-100%); 
 `;
 
 const AlbumCardInfo = styled.div`
@@ -355,7 +363,7 @@ export default function Main() {
     },
     {
       id: 8,
-      name: '사랑스러워',
+      name: '사랑스러워 울애기들',
       image: 'img/test8.jpeg',
       owner: '러블리보이',
     },
@@ -433,7 +441,7 @@ export default function Main() {
                 src={album.image}
                 alt={album.name}
               />
-              <AlbumName>{album.name}</AlbumName>
+              <AlbumName isLong={album.name.length > 12}>{album.name}</AlbumName>
             </AlbumCardContent>
           </div>
           <div className="back">
