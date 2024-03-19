@@ -4,11 +4,12 @@ import Header from '../Components/Header';
 import './Album.css'; 
 import AlbumCardStyles from '../Components/AlbumCardStyles';
 import MusicPlayer from '../Components/MusicPlayer';
-import MusicPlayBar from '../Components/MusicPlayBar';
 import {Link} from "react-router-dom";
 import audioTest from '../Components/audio/audioTest.m4a';
 import Paging from '../Components/Paging';
 import './Genre.css';
+import LikeButton from '../Components/LikeButton';
+import { BiMessageSquareDetail } from "react-icons/bi";
 
 const Menu = styled.div`
   position: fixed;
@@ -83,7 +84,7 @@ const ProducerButton = styled.div`
   font-weight: bold;
 `;
 
-const DropdownMenu = styled.ul`
+const ArtistDropdownMenu = styled.ul`
   display: none;
   position: absolute;
   left: 30px;
@@ -108,11 +109,37 @@ const DropdownMenu = styled.ul`
   }
 `;
 
-const MenuContainer = styled.div`
-  &:hover ${ProducerButton} {
-    transform: translateY(300px);
+const ProducerDropdownMenu = styled.ul`
+  display: none;
+  position: absolute;
+  left: 30px;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  background-color: black;
+  z-index: 1;
+
+  &.show-menu {
+    display: block;
+    animation: smoothAppear 0.8s;
+    opacity: 1;
   }
-  animation: duration 1s;
+
+  &.close-menu {
+    opacity: 0;
+    animation: fadeout 0.9s;
+  }
+  &:hover {
+    background-color: black;
+  }
+`;
+
+
+const MenuContainer = styled.div`
+&:hover ${ProducerButton} {
+  transform: translateY(300px);
+}
+animation: duration 1s;
 `;
 
 const ProducerMenuItemLink = styled.li`
@@ -162,7 +189,7 @@ const AlbumName = styled.div`
 `;
 
 const AlbumCardInfo = styled.div`
-  width: 185px;
+  width: 200px;
   position: relative;
   top: 10px;
   left: 5px;
@@ -195,13 +222,12 @@ const CloseButton = styled.div`
   cursor: pointer;
 `;
 
-const LikedButton = styled.div`
-  font-size: 20px;
-  top: 30px;
-  right: 10px;
-  position: fixed:
-  align-items: right;
-  cursor: pointer;
+const ChatButton = styled.div`
+  weight: bold;
+  color: white;
+  right: 30px;
+  margin-top: -68px;
+  position: fixed;
 `;
 
 // const Paging = styled.div`
@@ -211,9 +237,9 @@ const LikedButton = styled.div`
 export default function Main() {
   const [cardStates, setCardStates] = useState(new Array(8).fill(false));
   const [genreStates, setGenreStates] = useState(new Array(4).fill(false));
-  const [likeCounts, setLikeCounts] = useState(new Array(8).fill(0));
   const [isProducerMenuOpen, setIsProducerMenuOpen] = useState(false);
   const [isArtistMenuOpen, setIsArtistMenuOpen] = useState(false);
+  const [likeCounts, setLikeCounts] = useState();
 
   const handleProducerMenuMouseOver = () => {
     setIsProducerMenuOpen(true);
@@ -350,13 +376,13 @@ export default function Main() {
               </FeedButton>
             </MenuLink>
             
-            <MenuLink to="/Artist">
+            <MenuLink to ="/Artist">
             <ArtistButton
                 onMouseOver={handleArtistMenuMouseOver}
               >
                 Artist
               </ArtistButton>
-              <DropdownMenu
+              <ArtistDropdownMenu
                 className={isArtistMenuOpen ? "show-menu" : "close-menu"}
                 onMouseOver={handleArtistMenuMouseOver}
                 onMouseOut={handleArtistMenuMouseOut}
@@ -368,19 +394,19 @@ export default function Main() {
                 <ArtistMenuItemLink>DANCE</ArtistMenuItemLink>
                 <ArtistMenuItemLink>R&B</ArtistMenuItemLink>
                 <ArtistMenuItemLink>BALLAD</ArtistMenuItemLink>
-              </DropdownMenu>
+              </ArtistDropdownMenu>
             </MenuLink>
             
-            <MenuContainer>
-              <ProducerButton
-                onMouseOver={handleProducerMenuMouseOver}
-              >
+            <MenuContainer 
+              onMouseOver={handleProducerMenuMouseOver}
+            >
+              <ProducerButton>
                 Producer
               </ProducerButton>
-              <DropdownMenu
-                className={isProducerMenuOpen ? "show-menu" : "close-menu"}
-                onMouseOver={handleProducerMenuMouseOver}
-                onMouseOut={handleProducerMenuMouseOut}
+              <ProducerDropdownMenu
+              className={isProducerMenuOpen ? "show-menu" : "close-menu"}
+              onMouseOver={handleProducerMenuMouseOver}
+              onMouseOut={handleProducerMenuMouseOut}
               >
                 <ProducerMenuItemLink>POP</ProducerMenuItemLink>
                 <ProducerMenuItemLink>ROCK</ProducerMenuItemLink>
@@ -389,7 +415,7 @@ export default function Main() {
                 <ProducerMenuItemLink>DANCE</ProducerMenuItemLink>
                 <ProducerMenuItemLink>R&B</ProducerMenuItemLink>
                 <ProducerMenuItemLink>BALLAD</ProducerMenuItemLink>
-              </DropdownMenu>
+              </ProducerDropdownMenu>
             </MenuContainer>
         </Menu>
         
@@ -414,12 +440,16 @@ export default function Main() {
               <AlbumCardInfo>
               <AlbumName>{album.name}</AlbumName>
               <AlbumOwnerInfo>{album.owner}</AlbumOwnerInfo>
-              <CloseButton onClick={() => handleCardClose(index)}>X</CloseButton>
-              <LikedButton onClick={() => handleLikeClick(index)}>❤️‍🔥{likeCounts[index]}</LikedButton>
-              {cardStates[index] && (
+              <CloseButton onClick={() => handleCardClose(index)}>X</CloseButton>      
+                {cardStates[index] && (
                 <>
                   <MusicPlayer audioSrc={audioTest} />
-                  <MusicPlayBar />
+                  <LikeButton/>  
+                  <Link to="/Chat">
+                    <ChatButton>
+                      <BiMessageSquareDetail />
+                    </ChatButton>   
+                  </Link>
                 </>
               )}
             </AlbumCardInfo>

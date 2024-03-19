@@ -9,6 +9,7 @@ const AudioPlayerContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 75px;
 `;
 
 const ProgressBarContainer = styled.div`
@@ -57,12 +58,13 @@ const TimeLabels = styled.div`
   justify-content: space-between;
   font-size: 0.8em;
   color: #999;
+  font-size: 13px;
 `;
 
 const PlayButton = styled.div`
   font-size: 24px;
   cursor: pointer;
-  margin-top: 50px;
+  margin-top: 0px;
 `;
 
 const AudioPlayer = ({ audioSrc }) => {
