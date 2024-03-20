@@ -11,6 +11,7 @@ import './Genre.css';
 import LikeButton from '../Components/LikeButton';
 import { BiMessageSquareDetail } from "react-icons/bi";
 
+
 const Menu = styled.div`
   position: fixed;
   top: 250px;
@@ -28,7 +29,7 @@ const AlbumTitle = styled.div`
   padding: 0 19.5rem;
   margin: 0 auto;
   margin-bottom: 0px;
-  margin-top: 170px;
+  margin-top: 140px;
   color: white;
   align-item: left;
 `;
@@ -248,6 +249,12 @@ export default function Main() {
   const [isProducerMenuOpen, setIsProducerMenuOpen] = useState(false);
   const [isArtistMenuOpen, setIsArtistMenuOpen] = useState(false);
   const [likeCounts, setLikeCounts] = useState();
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const handlePageChange = ({ selected }) => {
+    setCurrentPage(selected);
+    window.scrollTo(0, 0);
+  };
 
   const handleProducerMenuMouseOver = () => {
     setIsProducerMenuOpen(true);
@@ -277,46 +284,6 @@ export default function Main() {
     setCardStates(newCardStates);
   };
 
-  const handleLikeClick = (index) => {
-    const newLikeCounts = [...likeCounts];
-    newLikeCounts[index] += 1;
-    setLikeCounts(newLikeCounts);
-  };
-
-  // const genre = [
-  //   {
-  //     id: 1,
-  //     name: POP
-  //   },
-  //   {
-  //     id: 2,
-  //     name: ROCK
-  //   },
-  //   {
-  //     id: 3,
-  //     name: RAP/HIPHOP
-  //   },
-  //   {
-  //     id: 4,
-  //     name: INDIE
-  //   },
-  //   {
-  //     id: 5,
-  //     name: JAZZ
-  //   },
-  //   {
-  //     id: 6,
-  //     name: DANCE
-  //   },
-  //   {
-  //     id: 7,
-  //     name: R&B
-  //   },
-  //   {
-  //     id: 8,
-  //     name: BALLAD
-  //   } 
-  // ]
   const albumList = [
     {
       id: 1,
@@ -428,48 +395,48 @@ export default function Main() {
         </Menu>
         
         <AlbumGrid>
-      {albumList.map((album, index) => (
-        <AlbumCardStyles key={index}>
-        <div className={`album-card ${cardStates[index] ? 'flipped' : ''}`}>
-          <div
-            className="front"
-            onClick={() => handleClick(index)}
-          >
-            <AlbumCardContent>
-              <img
-                className="album-image"
-                src={album.image}
-                alt={album.name}
-              />
-              <AlbumName isLong={album.name.length > 12}>{album.name}</AlbumName>
-            </AlbumCardContent>
-          </div>
-          <div className="back">
-              <AlbumCardInfo>
-              <AlbumName>{album.name}</AlbumName>
-              <AlbumOwnerInfo>{album.owner}</AlbumOwnerInfo>
-              <CloseButton onClick={() => handleCardClose(index)}>X</CloseButton>      
-                {cardStates[index] && (
-                <>
-                  <MusicPlayer audioSrc={audioTest} />
-                  <LikeButton/>  
-                  <Link to="/Chat">
-                    <ChatButton>
-                      <BiMessageSquareDetail />
-                    </ChatButton>   
-                  </Link>
-                </>
-              )}
-            </AlbumCardInfo>
-          </div>
-        </div>
-      </AlbumCardStyles>
-    ))}
-  </AlbumGrid>
-  {/* <div>
-          <Paging></Paging>
-      </div> */}
-      </div>
-      
+          {albumList.map((album, index) => (
+            <AlbumCardStyles key={index}>
+              <div className={`album-card ${cardStates[index] ? 'flipped' : ''}`}>
+                <div
+                  className="front"
+                  onClick={() => handleClick(index)}
+                >
+                  <AlbumCardContent>
+                    <img
+                      className="album-image"
+                      src={album.image}
+                      alt={album.name}
+                    />
+                    <AlbumName isLong={album.name.length > 12}>{album.name}</AlbumName>
+                  </AlbumCardContent>
+                </div>
+                <div className="back">
+                  <AlbumCardInfo>
+                    <AlbumName>{album.name}</AlbumName>
+                    <AlbumOwnerInfo>{album.owner}</AlbumOwnerInfo>
+                    <CloseButton onClick={() => handleCardClose(index)}>X</CloseButton>
+                    {cardStates[index] && (
+                      <>
+                        <MusicPlayer audioSrc={audioTest} />
+                        <LikeButton/>
+                        <Link to="/Chat">
+                          <ChatButton>
+                            <BiMessageSquareDetail />
+                          </ChatButton>
+                        </Link>
+                      </>
+                    )}
+                  </AlbumCardInfo>
+                </div>
+              </div>
+            </AlbumCardStyles>
+          ))}
+        </AlbumGrid>
+      <Paging
+        onPageChange={handlePageChange}
+        currentPage={currentPage}
+      />
+    </div>
   )
 } 
