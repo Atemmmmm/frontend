@@ -9,6 +9,8 @@ import { FaAngleLeft } from "react-icons/fa";
 import cute from "../image/cute.jpg";
 import { ScrollBar } from '../Components/ScrollBar';
 import Clock from 'react-live-clock';
+import { CiImageOn } from "react-icons/ci";
+import { MdOutlineAudioFile } from "react-icons/md";
 
 const MainBackground = styled.div`
   position: relative;
@@ -33,7 +35,7 @@ const MainBox = styled.div`
 `;
 
 const LeftContainer = styled.div`
-  width: 30%;
+  width: 15rem;
   float: left;
   height: 100%;
   border-radius: 10%;
@@ -45,25 +47,28 @@ const ChatListContainer = styled.div`
   height: 80%;
   border-radius: 50px;
   display: grid;
+  width: 300px;
 `
 
 const ChatList = styled.button`
   background-color: white;
   border: none;
   border-radius: 50px;
-  heigt: 20px;
+  heigt: 50px;
 `
 
 const Username = styled.text`
   font-size: ${(props) => props.fontSize};
-  font-weight: bold;
+  // font-weight: bold;
+  // font-family: "SCDream";
   display: inline-block;
   margin: ${(props) => props.margin};
 
 `
 
 const Usermessage = styled.p`
-  margin: 5px 100px 0 0 ;
+  margin: 5px 120px 0 0;
+  // font-family: "SCDream";
 `
 
 
@@ -75,19 +80,19 @@ const StyledExitIcon = styled(FaAngleLeft)`
 
 const ChatContainer = styled.div`
   background-color: white;
-  width: 50%;
+  width: 60%;
   height: 40rem;
-  float: left;
-  margin-top: 30px;
+  float: right;
   border-radius: 50px;
-  margin-left: 30px;
+  margin: 30px 3rem;
+  
 `
 
 const Inputarea = styled.div`
     min-height:50px;
     position: absolute;
     bottom: 30px;
-    width: 50%;
+    width: 60%;
     
 `
 const PlusButton = styled.div`
@@ -105,12 +110,13 @@ const Inputcontainer = styled.form`
     display: flex;
     justify-content: space-between;
     width: 100%;
-    position: relative;
+    
 `
+
 
 const MessageInput = styled.input`
   background-color: gray;
-  width: 100%;
+  width: 90%;
   height: 50px;
   color: white;
   border-radius: 20px;
@@ -125,7 +131,7 @@ const SendButton = styled.button`
     position: absolute;
     right: 5px;
     min-width: 70px;
-    background-color:transparent;
+    background-color: transparent;
     border: none;
     :hover{
       cursor:pointer;
@@ -159,7 +165,7 @@ const Message = styled.p`
 const StyledDate = styled.div`
     display: flex;
     justify-content: center;
-    margin: 10px;
+    margin: 5px;
 `
 
 const MyMessageContainer = styled.div`
@@ -172,28 +178,34 @@ const MyMessageContainer = styled.div`
 `
 
 const MyMessage = styled.div`
-  background-color: #f7e600;
+  background-color: #FCF406;
   border-radius: 8px;
   padding: 8px;
-  max-width: 200px;
-  font-size: 20px;
+  max-width: 300px;
+  font-size: 17px;
   font-bold: bold;
   margin-left: 10px;
+  font-family: "Jura_Bold","SCDream",sans-serif;
 `
 
 const YourMessageContainer = styled.div`
   display: flex;
   justify-content: flex-start;
+  width: 100%;
   /* margin-bottom: 5px; */
   align-items: center;  
 `
 
 const YourMessage = styled.div`
-  background-color: white;
+  background-color: #201D57;
   border-radius: 8px;
   padding: 8px;
-  max-width: 200px;
-  font-size: 12px;
+  max-width: 300px;
+  font-size: 17px;
+  font-bold: bold;
+  color: white;
+  margin: 0 10px;
+
 `
 const CHAT = styled.text`
   font-size: 60px;
@@ -216,23 +228,58 @@ const UserImg = styled.img`
   float: left;
 
 `
+const LastTime = styled.text`
+  display: flex;
+  float: right;
+  margin-top: 25px;
+
+`
 
 const ChatHeader = styled.div`
 
 `
 
-const ChatMiddel = styled.div`
-    height: 400px;
+const ChatMiddle = styled.div`
+    height: 470px;
 `
+
+export const OptionsData = [
+  {key: "Upload", value: "Upload"}, 
+  {key: "MyPage", value: "MyPage"},
+  {key: "Feed", value: "Feed"}, 
+
+  {key: "Logout", value: "Logout"}
+];
+
 export default function Chat() {
   const [message, setMessage] = useState('')
   const [messageList, setMessageList] = useState([])
   const scrollRef = useRef();
   const [modal, setModal] = useState(false);
+  const ImagefileInputRef = useRef();
+  const AudiofileInputRef = useRef();
+  const [imageFile, setImageFile] = useState();
+  const [audioFile, setAudioFile] = useState();
+  const [imageName, setImageName] = useState('');
+  
 
-  const onChange = useCallback((e) => {
+  const handleMessageChange = useCallback((e) => {
     setMessage(e.target.value);
   }, []);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
+    setImageName(file.name);
+    setMessage(file.name);
+  };
+
+  const handleAudioChange = (e) =>{
+    const file = e.target.files[0];
+    setAudioFile(file);
+    setImageName(file.name);
+    setMessage(file.name);
+  }
 
   const onSubmit = (e) => {
     if (message.length == 0) {
@@ -244,14 +291,22 @@ export default function Chat() {
   };
 
   const sendMessage = (event)=>{
-    
-    let copyChat = [...messageList];
+    const newMessage={
+      text: message,
+      image: imageFile? URL.createObjectURL(imageFile) : null,
+      audio: audioFile? URL.createObjectURL(audioFile): null
+    };
+
+    let copyChat = ([...messageList, newMessage]);
     if(message != '') {
-      copyChat.push(message);
       setMessageList(copyChat);
       setMessage('');
+      setImageFile(null);
+      setAudioFile(null);
+      setImageName('');
       
     }
+    
     
     console.log("메시지가 전송되었습니다.");
     
@@ -278,6 +333,34 @@ useEffect(() => {
   scrollToBottom();
 }, [messageList]);
 
+{/* 올린 파일 값에 접근 */}
+const handleImageButtonClick = (event) =>{
+  event.preventDefault();
+  ImagefileInputRef.current?.click(); 
+}
+
+const handleAudioButtonClick = (event) =>{
+  event.preventDefault();
+  AudiofileInputRef.current?.click(); 
+}
+
+
+
+const handleChange = (event) => {
+  const formData = new FormData();
+  formData.append('file', event.target.file[0]);
+  // const response = apiClient.post('', formData);
+  console.log(event.target.files[0]);
+};
+
+
+
+  // const onChangeImage = (event) => {
+  //   const file = event.target.files[0];
+  //   const imageUrl = URL.createObjectURL(file);
+  //   setUploadedImage(imageUrl);
+  // };
+
   return (
 
     <MainBackground>
@@ -293,17 +376,21 @@ useEffect(() => {
             <ChatList onClick={ () => setModal(true) }>
               
                 <UserImg src={cute} alt="user"/>
-                <Username margin="25px 100px 0 0" fontSize="20px">하민</Username>
+                <Username margin="25px 70px 0 0" fontSize="20px">하민</Username>
+                <LastTime>PM 10:00</LastTime>
                 <Usermessage>메시지</Usermessage>
+                
             
             </ChatList>
           
            
-            <ChatList onClick={ () => setModal(true) }>
+            <ChatList onClick={() => setModal(true)}>
               
                 <UserImg src={cute} alt="user"/>
-                <Username margin="25px 100px 0 0" fontSize="20px">하민</Username>
+                <LastTime>PM 10:00</LastTime>
+                <Username margin="25px 70px 0 0" fontSize="20px">하민</Username>
                 <Usermessage>메시지</Usermessage>
+             
             
             </ChatList>
             </ScrollBar>
@@ -320,37 +407,49 @@ useEffect(() => {
             <Username margin="22px 10px" fontSize="25px">하민</Username>
           </ChatHeader>
           <StyledDate>
-            <Clock format={'YYYY-MM-DD'} ticking={false} timezone={"Asia/Seoul"} />
+            <Clock format={'YYYY-MM-DD'} ticking={false} timezone={"Asia/Seoul"} style={{fontSize: "20px"}} />
           </StyledDate>
+
           <ScrollBar>
-            <ChatMiddel ref={scrollRef}>
+            <ChatMiddle ref={scrollRef}>
             
           
-            {messageList.map((message) => {
+            {messageList.map((message, index) => {
+              
               return (
                 
-                <MessageContainer key={message._id} ref={scrollRef}>
+                <MessageContainer key={index} ref={scrollRef}>
                   
+                    <YourMessageContainer>
+                      
+                      <YourMessage>
+                        {message.text}
+                        
+                      </YourMessage>
+                      <Clock format={'A hh:mm'} ticking={false} timezone={"Asia/Seoul"} />
+                      
+                    </YourMessageContainer> 
+
                     <MyMessageContainer>
                     <Clock format={'A hh:mm'} ticking={false} timezone={"Asia/Seoul"} />
-                      <MyMessage>{message}</MyMessage>
-                    </MyMessageContainer>
-                  
-                    {/* <YourMessageContainer>
-                      <img
-                        src="/profile.jpeg"
-                        className="profile-image"
-                        style={
-                          (index === 0
-                            ? { visibility: "visible" }
-                            : messageList[index - 1].user.name === user.name) ||
-                          messageList[index - 1].user.name === "system"
-                            ? { visibility: "visible" }
-                            : { visibility: "hidden" }
-                        } */}
-                      {/* />
-                      <YourMessage>{message}</YourMessage>
-                    </YourMessageContainer> */}
+                      
+                        {message.image?
+                    
+                          <img src={message.image} alt="error"
+                          style={{width: "200px", height: "auto", margin: "10px"}}
+                          />
+                        : (message.audio?
+                          <audio src={message.audio} controls
+                           style={{margin: "10px"}}/>
+                          :
+                          <MyMessage>
+                                {message.text}
+                          </MyMessage>
+                        )
+                        }
+                        
+                      </MyMessageContainer>
+                    
                   
               </MessageContainer>
               
@@ -359,22 +458,46 @@ useEffect(() => {
           
           
           
-          </ChatMiddel>
+          </ChatMiddle>
           </ScrollBar>
        
         
       
           <Inputarea>
             <Inputcontainer onSubmit={onSubmit}>
+              
+              <CiImageOn type='button'  
+                          onClick={handleImageButtonClick} size="40px"
+                          style={{marginLeft: "15px"}}/>
+             
+              <input type="file" accept='image/*'
+                ref={ImagefileInputRef}
+                onChange={handleImageChange} 
+                style={{display: "none"}}/>
+              
+           
+             
+              <MdOutlineAudioFile type='button' 
+              onClick={handleAudioButtonClick} size="40px"/>
+
+              <input type="file" accept='audio/*'
+                ref={AudiofileInputRef}
+                onChange={handleAudioChange} 
+                style={{display: "none"}}/>
+
+              {/* <PlusButton/> */}
+              
               <MessageInput
                 placeholder="메세지를 입력하세요."
                 value={message}
-                onChange={onChange}
+                onChange={handleMessageChange}
                 onKeyDown={handleKeyPress}
                 multiline={false}
                 rows={1}
                 
               ></MessageInput>
+             
+
               <SendButton
                 type="button"
                 onClick={sendMessage}>
