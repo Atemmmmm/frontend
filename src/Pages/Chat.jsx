@@ -12,11 +12,12 @@ import Clock from 'react-live-clock';
 import { CiImageOn } from "react-icons/ci";
 import { MdOutlineAudioFile } from "react-icons/md";
 
+
 const MainBackground = styled.div`
   position: relative;
   width:100vw;
   height:100vh;
-  background-color: black;
+
 `;
 
 const MainBox = styled.div`
@@ -39,15 +40,16 @@ const LeftContainer = styled.div`
   float: left;
   height: 100%;
   border-radius: 10%;
-  margin: 0 3rem;
+  margin: 0 5rem;
   margin-bottom: 0;
 `
+
 const ChatListContainer = styled.div`
   background-color: white;
   height: 80%;
   border-radius: 50px;
   display: grid;
-  width: 300px;
+  width: 18rem;
 `
 
 const ChatList = styled.button`
@@ -80,19 +82,21 @@ const StyledExitIcon = styled(FaAngleLeft)`
 
 const ChatContainer = styled.div`
   background-color: white;
-  width: 60%;
+  width: 55%;
   height: 40rem;
   float: right;
   border-radius: 50px;
-  margin: 30px 3rem;
-  
+  margin: 30px 5rem;
+  min-width: 300px;
+  position: absolute;
+  right: 0;
 `
 
 const Inputarea = styled.div`
     min-height:50px;
     position: absolute;
-    bottom: 30px;
-    width: 60%;
+    bottom: 0px;
+    width: 100%;
     
 `
 const PlusButton = styled.div`
@@ -243,14 +247,6 @@ const ChatMiddle = styled.div`
     height: 470px;
 `
 
-export const OptionsData = [
-  {key: "Upload", value: "Upload"}, 
-  {key: "MyPage", value: "MyPage"},
-  {key: "Feed", value: "Feed"}, 
-
-  {key: "Logout", value: "Logout"}
-];
-
 export default function Chat() {
   const [message, setMessage] = useState('')
   const [messageList, setMessageList] = useState([])
@@ -400,6 +396,9 @@ const handleChange = (event) => {
           {
               modal && 
               <modal>
+
+
+
         <ChatContainer>
         
           <ChatHeader style={{borderBottom: "1px black solid", display: "flex", alignContent: "center"}}>

@@ -9,7 +9,6 @@ import CustomSelect from '../Components/CustomSelect';
 const MainBackground = styled.div`
   width:100%;
   height:100vh;
-  background-color: black;
 `;
 
 const ImageUploadBox = styled.div`
