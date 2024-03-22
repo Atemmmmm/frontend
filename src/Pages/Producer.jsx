@@ -4,7 +4,7 @@ import Header from '../Components/Header';
 import './Album.css'; 
 import AlbumCardStyles from '../Components/AlbumCardStyles';
 import MusicPlayer from '../Components/MusicPlayer';
-import {Link} from "react-router-dom";
+import {Link, useNavigate } from "react-router-dom";
 import audioTest from '../Components/audio/audioTest.m4a';
 import Paging from '../Components/Paging';
 import './Genre.css';
@@ -41,14 +41,13 @@ const MenuLink = styled(Link)`
 `;
 
 const FeedButton = styled.div`
-  height: 30px;
+  height: 15px;
   width: 5px;
   font-size: 20px;
   text-align: left;
-  padding: 10px;
-  margin: 10px;
-  margin-bottom: 15px;
+  padding: 15px;
   margin-top: 15px;
+  margin-bottom: 15px;
   color: white;
   align-item: left;
   font-size: 20pt;
@@ -56,33 +55,40 @@ const FeedButton = styled.div`
 `;
 
 const ArtistButton = styled.div`
-  height: 30px;
+  height: 15px;
   width: 5px;
   font-size: 20px;
   text-align: left;
-  padding: 10px;
-  margin: 10px;
+  padding: 15px;
   margin-bottom: 15px;
-  margin-top: 5px;
   color: white;
   align-item: left;
   font-size: 20pt;
   font-weight: bold;
+
+  &:hover {
+    color: #7777;
+  }
 `;
 
 const ProducerButton = styled.div`
-  height: 30px;
+  height: 15px;
   width: 5px;
   font-size: 20px;
   text-align: left;
-  padding: 10px;
-  margin: 10px;
-  margin-bottom: 10px;
-  margin-top: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
   color: white;
   align-item: left;
   font-size: 20pt;
   font-weight: bold;
+  display: inline-block;
+  &:hover {
+    color: #7777;
+  }
+  &:hover ${ArtistButton} {
+    transform: translateY(300px);
+  }
 `;
 
 const ArtistDropdownMenu = styled.ul`
@@ -92,7 +98,10 @@ const ArtistDropdownMenu = styled.ul`
   list-style-type: none;
   padding: 0;
   margin: 0;
+  margin-top: 0px;
   background-color: black;
+  cursor: pointer;
+  color: white;
   z-index: 1;
 
   &.show-menu {
@@ -118,6 +127,8 @@ const ProducerDropdownMenu = styled.ul`
   padding: 0;
   margin: 0;
   background-color: black;
+  color: white;
+  cursor: pointer;
   z-index: 1;
 
   &.show-menu {
@@ -130,38 +141,22 @@ const ProducerDropdownMenu = styled.ul`
     opacity: 0;
     animation: fadeout 0.9s;
   }
-  &:hover {
-    background-color: black;
+  &:hover ${ArtistButton} {
+    &.close-menu{
+      color: black;
+    }  
   }
 `;
 
-const MenuContainer = styled.div`
-&:hover ${ProducerButton} {
-  transform: translateY(300px);
-}
-animation: duration 1s;
-`;
-
-const ProducerMenuItemLink = styled.li`
-  padding: 10px;
-  cursor: pointer;
-  text-decoration-line: none;
-  color:white;
-
-  &:hover {
-    background-color: black;
+const ProducerMenuContainer = styled.div`
+  animation: duration 1s;
+  &.hover ${ProducerButton} {
+    color: #7777;
   }
 `;
 
-const ArtistMenuItemLink = styled.li`
-  padding: 10px;
-  cursor: pointer;
-  text-decoration-line: none;
-  color:white;
-
-  &:hover {
-    background-color: #black;
-  }
+const ArtistMenuContainer = styled.div`
+  animation: duration 1s;
 `;
 
 const AlbumGrid = styled.div`
@@ -237,11 +232,8 @@ const ChatButton = styled.div`
   right: 30px;
   margin-top: -68px;
   position: fixed;
+  cursor: pointer;
 `;
-
-// const Paging = styled.div`
-//   display: flex;
-// `;
 
 export default function Main() {
   const [cardStates, setCardStates] = useState(new Array(8).fill(false));
@@ -282,6 +274,15 @@ export default function Main() {
     const newCardStates = [...cardStates];
     newCardStates[index] = false;
     setCardStates(newCardStates);
+  };
+
+  const navigate = useNavigate();
+  const onClickArtistGenreBtn = (genre) => () => {
+    navigate(`?category=artist&genre=${genre.name}`);
+  };
+
+  const onClickProducerGenreBtn = (genre) => () => {
+    navigate(`?category=producer&genre=${genre.name}`);
   };
 
   const albumList = [
@@ -336,6 +337,41 @@ export default function Main() {
     },
   ];
 
+  const genre = [
+      {
+        id: 1,
+        name: 'POP'
+      },
+      {
+        id: 2,
+        name: 'ROCK'
+      },
+      {
+        id: 3,
+        name: 'RAP&HIPHOP'
+      },
+      {
+        id: 4,
+        name: 'INDIE'
+      },
+      {
+        id: 5,
+        name: 'JAZZ'
+      },
+      {
+        id: 6,
+        name: 'DANCE'
+      },
+      {
+        id: 7,
+        name: 'R&B'
+      },
+      {
+        id: 8,
+        name: 'BALLAD'
+      } 
+    ]
+
   return (
         <div style={{backgroundColor : 'black', minHeight: '100vh', padding: '20px', overflowY: 'scroll',}}>
         <Header />
@@ -351,8 +387,8 @@ export default function Main() {
               </FeedButton>
             </MenuLink>
             
-            <MenuLink to ="/Artist">
-            <ArtistButton
+            <ArtistMenuContainer>
+              <ArtistButton
                 onMouseOver={handleArtistMenuMouseOver}
               >
                 Artist
@@ -362,36 +398,32 @@ export default function Main() {
                 onMouseOver={handleArtistMenuMouseOver}
                 onMouseOut={handleArtistMenuMouseOut}
               >
-                <ArtistMenuItemLink>POP</ArtistMenuItemLink>
-                <ArtistMenuItemLink>ROCK</ArtistMenuItemLink>
-                <ArtistMenuItemLink>RAP/HIPHOP</ArtistMenuItemLink>
-                <ArtistMenuItemLink>INDIE</ArtistMenuItemLink>
-                <ArtistMenuItemLink>DANCE</ArtistMenuItemLink>
-                <ArtistMenuItemLink>R&B</ArtistMenuItemLink>
-                <ArtistMenuItemLink>BALLAD</ArtistMenuItemLink>
+                {genre.map((genre, index) => (
+                <div key={genre.id} onClick={onClickArtistGenreBtn(genre)}>
+                  <p>{genre.name}</p>
+                </div>
+                ))}
               </ArtistDropdownMenu>
-            </MenuLink>
+            </ArtistMenuContainer>
             
-            <MenuContainer 
-              onMouseOver={handleProducerMenuMouseOver}
-            >
-              <ProducerButton>
-                Producer
-              </ProducerButton>
-              <ProducerDropdownMenu
-              className={isProducerMenuOpen ? "show-menu" : "close-menu"}
-              onMouseOver={handleProducerMenuMouseOver}
-              onMouseOut={handleProducerMenuMouseOut}
-              >
-                <ProducerMenuItemLink>POP</ProducerMenuItemLink>
-                <ProducerMenuItemLink>ROCK</ProducerMenuItemLink>
-                <ProducerMenuItemLink>RAP/HIPHOP</ProducerMenuItemLink>
-                <ProducerMenuItemLink>INDIE</ProducerMenuItemLink>
-                <ProducerMenuItemLink>DANCE</ProducerMenuItemLink>
-                <ProducerMenuItemLink>R&B</ProducerMenuItemLink>
-                <ProducerMenuItemLink>BALLAD</ProducerMenuItemLink>
+              <ProducerMenuContainer>
+                <ProducerButton
+                  onMouseOver={handleProducerMenuMouseOver}
+                >
+                  Producer
+                </ProducerButton>
+                <ProducerDropdownMenu
+                  className={isProducerMenuOpen ? "show-menu" : "close-menu"}
+                  onMouseOver={handleProducerMenuMouseOver}
+                  onMouseOut={handleProducerMenuMouseOut}
+                >
+                  {genre.map((genre, index) => (
+                  <div key={genre.id} onClick={onClickProducerGenreBtn(genre)}>
+                    <p>{genre.name}</p>
+                  </div>
+                  ))}
               </ProducerDropdownMenu>
-            </MenuContainer>
+            </ProducerMenuContainer>
         </Menu>
         
         <AlbumGrid>
