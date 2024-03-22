@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const StyledPaging = styled(ReactPaginate)`
   display: flex;
