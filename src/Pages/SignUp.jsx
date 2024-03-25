@@ -9,7 +9,6 @@ const MainBackground = styled.div`
   position: relative;
   width:100vw;
   height:100vh;
-  background-color: black;
 `;
 
 const MainBox = styled.div`
@@ -37,6 +36,7 @@ const Title = styled.h1`
   margin-top: 6vh;
   color: black;
   align-item: center;
+  
 `;
 
 
@@ -152,6 +152,16 @@ export default function SignUp() {
                 <Input placeholder="이메일을 입력해주세요" type="email"/>
                 <Input placeholder="비밀번호를 입력해주세요" type="password"/>
                 <Input placeholder="비밀번호를 다시 한번 입력해주세요" type="password"/>
+                <WrapRadioButton>
+                    <RadioGroup>
+                        <Radio name="contact" value="Artist" defaultChecked>
+                        Artist
+                        </Radio>
+                        <Radio name="contact" value="Producer">
+                        Producer
+                        </Radio>
+                    </RadioGroup>
+                </WrapRadioButton>
                 <SubmitButton
                     color = "white"
                     background="#333232"
@@ -164,16 +174,7 @@ export default function SignUp() {
                     marginTop={"1.5rem"}
                     borderStyle={"none"}
                 />
-                <WrapRadioButton>
-                    <RadioGroup>
-                        <Radio name="contact" value="Artist" defaultChecked>
-                        Artist
-                        </Radio>
-                        <Radio name="contact" value="Producer">
-                        Producer
-                        </Radio>
-                    </RadioGroup>
-                </WrapRadioButton>
+               
         
             </WrapContent>    
         </MainBox>
