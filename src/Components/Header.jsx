@@ -21,6 +21,7 @@ const Title = styled.h1`
   float: left;
   color: white;
   margin-left: 0px;
+  font-family: 'Kavoon', serif;
 `;
 
 
