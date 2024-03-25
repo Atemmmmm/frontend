@@ -4,11 +4,14 @@ import {Link} from "react-router-dom";
 import JoinButton from './Button';
 
 const HeaderWrapper = styled.div`
-  height: 3.5rem;
+  position: fixed;
+  width: 100%;
+  height: 2 rem;
   align-items: center;
   justify-content: center;
-  display: flex;
-  padding: 0 3rem;
+  display: fixed;
+  padding: 0 2rem;
+
   justify-content: space-between;
   align-items:center;
   
@@ -163,6 +166,9 @@ export default function Header() {
                     borderRadius="2rem" 
                     fontSize={"20px"}
                     borderStyle={"none"}
+                    marginTop={"20px"}
+                    marginLeft={"75%"}
+                />
                     onClick={myPageHandler} ref={myPageRef}
           />
         </Link>
