@@ -1,4 +1,4 @@
-import React, { useState, useEffect, props } from 'react';
+import React, { useState, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Header from '../Components/Header';
 import './Album.css'; 
@@ -60,15 +60,21 @@ const ArtistButton = styled.div`
   font-size: 20px;
   text-align: left;
   padding: 15px;
-  margin-bottom: 15px;
   color: white;
   align-item: left;
   font-size: 20pt;
   font-weight: bold;
+  display: inline-block;
 
   &:hover {
-    color: #7777;
+    color: #777;
   }
+`;
+
+const ArtistDropdownMenu = styled.ul`
+  color: white;
+  height: ${props => (props.isOpen ? '350px' : '0px')};
+  overflow: hidden;
 `;
 
 const ProducerButton = styled.div`
@@ -77,86 +83,21 @@ const ProducerButton = styled.div`
   font-size: 20px;
   text-align: left;
   padding: 15px;
-  margin-bottom: 15px;
   color: white;
   align-item: left;
   font-size: 20pt;
   font-weight: bold;
   display: inline-block;
+
   &:hover {
-    color: #7777;
-  }
-  &:hover ${ArtistButton} {
-    transform: translateY(300px);
-  }
-`;
-
-const ArtistDropdownMenu = styled.ul`
-  display: none;
-  position: absolute;
-  left: 30px;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  margin-top: 0px;
-  background-color: black;
-  cursor: pointer;
-  color: white;
-  z-index: 1;
-
-  &.show-menu {
-    display: block;
-    animation: smoothAppear 0.8s;
-    opacity: 1;
-  }
-
-  &.close-menu {
-    opacity: 0;
-    animation: fadeout 0.9s;
-  }
-  &:hover {
-    background-color: black;
+    color: #777;
   }
 `;
 
 const ProducerDropdownMenu = styled.ul`
-  display: none;
-  position: absolute;
-  left: 30px;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  background-color: black;
   color: white;
-  cursor: pointer;
-  z-index: 1;
-
-  &.show-menu {
-    display: block;
-    animation: smoothAppear 0.8s;
-    opacity: 1;
-  }
-
-  &.close-menu {
-    opacity: 0;
-    animation: fadeout 0.9s;
-  }
-  &:hover ${ArtistButton} {
-    &.close-menu{
-      color: black;
-    }  
-  }
-`;
-
-const ProducerMenuContainer = styled.div`
-  animation: duration 1s;
-  &.hover ${ProducerButton} {
-    color: #7777;
-  }
-`;
-
-const ArtistMenuContainer = styled.div`
-  animation: duration 1s;
+  height: ${props => (props.isOpen ? '350px' : '0px')};
+  overflow: hidden;
 `;
 
 const AlbumGrid = styled.div`
@@ -242,6 +183,7 @@ export default function Main() {
   const [isArtistMenuOpen, setIsArtistMenuOpen] = useState(false);
   const [likeCounts, setLikeCounts] = useState();
   const [currentPage, setCurrentPage] = useState(0);
+  const dropdownRef = useRef(null);
 
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
@@ -284,6 +226,12 @@ export default function Main() {
   const onClickProducerGenreBtn = (genre) => () => {
     navigate(`?category=producer&genre=${genre.name}`);
   };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsArtistMenuOpen(false);
+    }
+  }
 
   const albumList = [
     {
@@ -386,36 +334,30 @@ export default function Main() {
                 Feed
               </FeedButton>
             </MenuLink>
-            
-            <ArtistMenuContainer>
+            <div onClick={handleClickOutside}>
               <ArtistButton
-                onMouseOver={handleArtistMenuMouseOver}
-              >
-                Artist
+                  onMouseOver={handleArtistMenuMouseOver}
+                  onMouseOut={handleArtistMenuMouseOut}
+                >
+                  Artist
               </ArtistButton>
-              <ArtistDropdownMenu
-                className={isArtistMenuOpen ? "show-menu" : "close-menu"}
-                onMouseOver={handleArtistMenuMouseOver}
-                onMouseOut={handleArtistMenuMouseOut}
-              >
-                {genre.map((genre, index) => (
-                <div key={genre.id} onClick={onClickArtistGenreBtn(genre)}>
-                  <p>{genre.name}</p>
-                </div>
-                ))}
-              </ArtistDropdownMenu>
-            </ArtistMenuContainer>
-            
-              <ProducerMenuContainer>
-                <ProducerButton
+                <ArtistDropdownMenu isOpen={isArtistMenuOpen} ref={dropdownRef}
+                >
+                  {genre.map((genre, index) => (
+                  <div key={genre.id} onClick={onClickArtistGenreBtn(genre)}>
+                    <p>{genre.name}</p>
+                  </div>
+                  ))}
+                </ArtistDropdownMenu>
+            </div>
+              
+            <div onClick={handleClickOutside}>
+              <ProducerButton
                   onMouseOver={handleProducerMenuMouseOver}
                 >
                   Producer
                 </ProducerButton>
-                <ProducerDropdownMenu
-                  className={isProducerMenuOpen ? "show-menu" : "close-menu"}
-                  onMouseOver={handleProducerMenuMouseOver}
-                  onMouseOut={handleProducerMenuMouseOut}
+                <ProducerDropdownMenu isOpen={isProducerMenuOpen} ref={dropdownRef}
                 >
                   {genre.map((genre, index) => (
                   <div key={genre.id} onClick={onClickProducerGenreBtn(genre)}>
@@ -423,7 +365,8 @@ export default function Main() {
                   </div>
                   ))}
               </ProducerDropdownMenu>
-            </ProducerMenuContainer>
+            </div>
+                
         </Menu>
         
         <AlbumGrid>
