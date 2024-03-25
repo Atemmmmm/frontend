@@ -11,7 +11,6 @@ import './Genre.css';
 import LikeButton from '../Components/LikeButton';
 import { BiMessageSquareDetail } from "react-icons/bi";
 
-
 const Menu = styled.div`
   position: fixed;
   top: 250px;
@@ -249,7 +248,7 @@ export default function Main() {
     },
     {
       id: 3,
-      name: '슬프고 주저하는 연인들을 위하여 앞으로 갔다가 뒤로 갔다가 그랜절 쿠크르삥뽕',
+      name: '슬프고 주저하는 연인들을 위하여',
       image: 'img/test3.jpeg',
       owner: '연진엑스',
     },
@@ -326,7 +325,7 @@ export default function Main() {
         <AlbumTitle>
       <div style={{ width: "185%", margin: "0" }}>
       </div>
-        <h4>{genre.name}좋아요를 많이 받은 곡</h4>
+        <h4>{genre}좋아요를 많이 받은 곡</h4>
         </AlbumTitle>
         <Menu>
           <MenuLink to="/Feed">
@@ -365,7 +364,8 @@ export default function Main() {
                   </div>
                   ))}
               </ProducerDropdownMenu>
-            </div>       
+            </div>
+                
         </Menu>
         
         <AlbumGrid>
