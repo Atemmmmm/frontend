@@ -2,13 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import Header from '../Components/Header';
 import LoginButton from '../Components/Button';
-
+import '../App.css';
 
 const MainBackground = styled.div`
   position: relative;
   width:100vw;
   height:100vh;
-  background-color: black;
   pointer-events: none;
 `;
 
@@ -37,6 +36,7 @@ const Title = styled.h1`
   margin-top: 8vh;
   color: black;
   align-item: center;
+  
 `;
 
 
