@@ -1,3 +1,7 @@
+*{
+  font-family: "Jura","SCDream",sans-serif;  
+}
+
 .App {
   text-align: center;
 }
@@ -37,17 +41,3 @@
   }
 }
 
-
-@font-face {
-  font-family: "Jura";
-  font-style: normal;
-  font-weight: 100;
-  src: url("./Fonts/Jura-VariableFont_wght.eot") format("eot");
-}
-
-@font-face {
-  font-family: "Kavoon";
-  font-style: normal;
-  font-weight: 500;
-  src: url("./Fonts/Kavoon-Regular.eot") format("eot");
-}

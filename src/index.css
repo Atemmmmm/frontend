@@ -3,7 +3,6 @@
 
 body {
   margin: 0;
-  font-family: "Jura";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -12,3 +11,46 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* 영어 폰트 */
+@font-face {
+  font-family: "Jura";
+  font-style: normal;
+  font-weight: 400;
+  src: url("./Fonts/Jura-VariableFont_wght.woff") format("woff");
+  unicode-range: U+0041-005A, U+0061-007A,  U+0030-0039;
+}
+
+@font-face {
+  font-family: "Jura_Bold";
+  font-style: normal;
+  font-weight: 500;
+  src: url("./Fonts/Jura-Bold.woff") format("woff");
+  unicode-range: U+0041-005A, U+0061-007A,  U+0030-0039;
+}
+
+/* 로고 폰트 */
+@font-face {
+  font-family: "Kavoon";
+  font-style: normal;
+  font-weight: 500;
+  src: url("./Fonts/Kavoon-Regular.woff") format("woff");
+}
+
+/* 한글 폰트*/
+ @font-face {
+  font-family: "NEXONGothic";
+  font-style: normal;
+  font-weight: 100;
+  src: url("./Fonts/NEXON-Lv1-GothicOTF.woff") format("woff");
+  unicode-range: U+AC00-D7A3;
+}
+
+@font-face {
+  font-family: "SCDream";
+  font-style: normal;
+  font-weight: 100;
+  src: url("./Fonts/SCDream5.woff") format("woff");
+  unicode-range: U+AC00-D7A3;
+}
+
