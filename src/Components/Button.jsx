@@ -8,18 +8,18 @@ export const BtnStyle = styled.button`
   font-family: 'Noto Sans KR', sans-serif;
   text-align: center;
   cursor: pointer;
-  border-radius: ${(props) => props.borderRadius};
-  border-style: ${(props) => props.borderStyle};
+  border-radius: ${(props) => props.borderradius};
+  border-style: ${(props) => props.borderstyle};
   color: ${(props) => props.color};
   background-color: ${(props) => props.background};
   width: ${(props) => props.width};
   height: ${(props) => props.height};
-  font-size: ${(props) => props.fontSize};
-  font-weight: ${(props) => props.fontWeight};
-  margin-top: ${(props) => props.marginTop};
-  margin-right: ${(props) => props.marginRight};
-  margin-left: ${(props) => props.marginLeft};
-  margin-bottom: ${(props) => props.marginBottom};
+  font-size: ${(props) => props.fontsize};
+  font-weight: ${(props) => props.fontweight};
+  margin-top: ${(props) => props.margintop};
+  margin-right: ${(props) => props.marginright};
+  margin-left: ${(props) => props.marginleft};
+  margin-bottom: ${(props) => props.marginbottom};
   &:hover {
     background-color: ${(props) => props.hoverBackgroundColor};
     transform: ${(props) => props.transform};
@@ -52,14 +52,14 @@ export default function Btn({
       background={background}
       width={width}
       height={height}
-      borderRadius={borderRadius}
-      borderStyle={borderStyle}
-      fontSize={fontSize}
-      fontWeight={fontWeight}
-      marginTop={marginTop}
-      marginBottom={marginBottom}
-      marginLeft={marginLeft}
-      marginRight={marginRight}
+      borderradius={borderRadius}
+      borderstyle={borderStyle}
+      fontsize={fontSize}
+      fontweight={fontWeight}
+      margintop={marginTop}
+      marginbottom={marginBottom}
+      marginleft={marginLeft}
+      marginright={marginRight}
       onClick={onClick}
       transform={transform}
       transition={transition}

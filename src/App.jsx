@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes, Router } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import SignUp from "./Pages/SignUp";
 import Login from "./Pages/Login";
 import Feed from "./Pages/Feed";
@@ -27,12 +27,11 @@ const BackgroundVideo = styled.video`
 
 function App() {
   return (
-      <BrowserRouter>
+      <>
             <BackgroundVideo autoPlay loop muted>
               <source src={video} type='video/mp4'/>
             </BackgroundVideo>
             <Routes>
-             
               <Route path="/Login" element = {<Login/>}/>
               <Route path="/SignUp" element = {<SignUp/>}/>
               <Route path="/Update" element = {<Update/>}/>
@@ -42,8 +41,7 @@ function App() {
               <Route path="/Artist" element = {<Artist/>}/>
               <Route path="/Producer" element = {<Producer/>}/>
             </Routes>
-      </BrowserRouter>
-
+     </>
   );
 }
 

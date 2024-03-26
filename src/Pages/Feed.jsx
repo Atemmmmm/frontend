@@ -234,50 +234,50 @@ export default function Main() {
 
   const albumList = [
     {
-      id: 1,
+      id: '1',
       name: '고백',
       image: 'img/test1.jpeg',
       owner: '연진엑스',
     },
     {
-      id: 2,
+      id: '2',
       name: '김연진은',
       image: 'img/test2.jpeg',
       owner: '연진엑스',
 
     },
     {
-      id: 3,
+      id: '3',
       name: '슬프고 주저하는 연인들을 위하여',
       image: 'img/test3.jpeg',
       owner: '연진엑스',
     },
     {
-      id: 4,
+      id: '4',
       name: '바보',
       image: 'img/test4.jpeg',
       owner: '연진엑스',
     },
     {
-      id: 5,
+      id: '5',
       name: '쪼꼼쓰는',
       image: 'img/test5.jpeg',
       owner: '쪼꼼쓰',
     },
     {
-      id: 6,
+      id: '6',
       name: '귀엽고',
       image: 'img/test6.jpeg',
       owner: '큐티파이',
     },
     {
-      id: 7,
+      id: '7',
       name: '예쁘고',
       image: 'img/test7.jpeg',
       owner: '구미베어',
     },
     {
-      id: 8,
+      id: '8',
       name: '사랑스러워 울애기들',
       image: 'img/test8.jpeg',
       owner: '러블리보이',
@@ -286,19 +286,19 @@ export default function Main() {
 
   const genre = [
       {
-        id: 1,
+        id: '1',
         name: 'POP'
       },
       {
-        id: 2,
+        id: '2',
         name: 'ROCK'
       },
       {
-        id: 3,
+        id: '3',
         name: 'RAP&HIPHOP'
       },
       {
-        id: 4,
+        id: '4',
         name: 'INDIE'
       },
       {
@@ -325,7 +325,7 @@ export default function Main() {
         <AlbumTitle>
       <div style={{ width: "185%", margin: "0" }}>
       </div>
-        <h4>{genre}좋아요를 많이 받은 곡</h4>
+        <h4>{genre.name}좋아요를 많이 받은 곡</h4>
         </AlbumTitle>
         <Menu>
           <MenuLink to="/Feed">
@@ -343,8 +343,9 @@ export default function Main() {
                 <ArtistDropdownMenu isOpen={isArtistMenuOpen} ref={dropdownRef}
                 >
                   {genre.map((genre, index) => (
-                  <div key={genre.id} onClick={onClickArtistGenreBtn(genre)}>
+                  <div key={index} onClick={onClickArtistGenreBtn(genre)}>
                     <p>{genre.name}</p>
+
                   </div>
                   ))}
                 </ArtistDropdownMenu>
@@ -359,7 +360,7 @@ export default function Main() {
                 <ProducerDropdownMenu isOpen={isProducerMenuOpen} ref={dropdownRef}
                 >
                   {genre.map((genre, index) => (
-                  <div key={genre.id} onClick={onClickProducerGenreBtn(genre)}>
+                  <div key={index} onClick={onClickProducerGenreBtn(genre)}>
                     <p>{genre.name}</p>
                   </div>
                   ))}
@@ -382,13 +383,14 @@ export default function Main() {
                       src={album.image}
                       alt={album.name}
                     />
+                    
                     <AlbumName isLong={album.name.length > 12}>{album.name}</AlbumName>
                   </AlbumCardContent>
                 </div>
                 <div className="back">
                   <AlbumCardInfo>
-                    <AlbumName>{album.name}</AlbumName>
-                    <AlbumOwnerInfo>{album.owner}</AlbumOwnerInfo>
+                    <AlbumName>{JSON.stringify(album.name)}</AlbumName>
+                    <AlbumOwnerInfo>{JSON.stringify(album.owner)}</AlbumOwnerInfo>
                     <CloseButton onClick={() => handleCardClose(index)}>X</CloseButton>
                     {cardStates[index] && (
                       <>

@@ -4,17 +4,10 @@ import {Link} from "react-router-dom";
 import JoinButton from './Button';
 
 const HeaderWrapper = styled.div`
-  position: fixed;
-  width: 100%;
-  height: 2 rem;
-  align-items: center;
-  justify-content: center;
-  display: fixed;
-  padding: 0 2rem;
-
-  justify-content: space-between;
+  position: fiexd;
+  display: flex;
+  height: 5rem;
   align-items:center;
-  
 `;
 
 const Title = styled.h1`
@@ -24,9 +17,14 @@ const Title = styled.h1`
   float: left;
   color: white;
   margin-top: 40px;
-  margin-left: 0px;
+  margin-left: 40px;
   font-family: 'Kavoon', serif;
 `;
+
+const ButtonWrap = styled.div`
+  float: right;
+  margin-left: 60rem;
+`
 
 const useDetectClose = (initialState) => {
   const [isOpen, setIsOpen] = useState(initialState);
@@ -155,8 +153,8 @@ export default function Header() {
   return (
     <HeaderWrapper>
       <Title>ArtPro</Title>
-      <DropdownContainer>
       <Link>
+      <ButtonWrap>
         <JoinButton
                     color = "white"
                     background="#333232"
@@ -166,13 +164,14 @@ export default function Header() {
                     borderRadius="2rem" 
                     fontSize={"20px"}
                     borderStyle={"none"}
-                    marginTop={"20px"}
-                    marginLeft={"75%"}
-                />
+                    marginRight={"0px"}
                     onClick={myPageHandler} ref={myPageRef}
-          />
+                />    
+      </ButtonWrap> 
         </Link>
-        <Menu isDropped={myPageIsOpen}>
+
+        <DropdownContainer>
+        <Menu $isDropped={myPageIsOpen}>
           <Ul>
             <Li>
               <LinkWrapper href="/Update">Upload</LinkWrapper>

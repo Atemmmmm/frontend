@@ -344,7 +344,7 @@ export default function Main() {
                 <ArtistDropdownMenu isOpen={isArtistMenuOpen} ref={dropdownRef}
                 >
                   {genre.map((genre, index) => (
-                  <div key={genre.id} onClick={onClickArtistGenreBtn(genre)}>
+                  <div key={index} onClick={onClickArtistGenreBtn(genre)}>
                     <p>{genre.name}</p>
                   </div>
                   ))}
@@ -360,7 +360,7 @@ export default function Main() {
                 <ProducerDropdownMenu isOpen={isProducerMenuOpen} ref={dropdownRef}
                 >
                   {genre.map((genre, index) => (
-                  <div key={genre.id} onClick={onClickProducerGenreBtn(genre)}>
+                  <div key={index} onClick={onClickProducerGenreBtn(genre)}>
                     <p>{genre.name}</p>
                   </div>
                   ))}
