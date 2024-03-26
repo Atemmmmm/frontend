@@ -161,10 +161,10 @@ export default function Header() {
                     width="5rem"
                     height="2rem"
                     name="JOIN"
-                    borderRadius="2rem" 
-                    fontSize={"20px"}
-                    borderStyle={"none"}
-                    marginRight={"0px"}
+                    borderradius="2rem" 
+                    fontsize={"20px"}
+                    borderstyle={"none"}
+                    marginright={"0px"}
                     onClick={myPageHandler} ref={myPageRef}
                 />    
       </ButtonWrap> 

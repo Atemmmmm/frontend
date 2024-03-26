@@ -484,7 +484,6 @@ const handleChange = (event) => {
                 onChange={handleAudioChange} 
                 style={{display: "none"}}/>
 
-              {/* <PlusButton/> */}
               
               <MessageInput
                 placeholder="메세지를 입력하세요."
