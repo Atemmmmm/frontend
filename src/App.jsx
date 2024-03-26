@@ -5,7 +5,7 @@ import Login from "./Pages/Login";
 import Feed from "./Pages/Feed";
 import Artist from "./Pages/Artist";
 import Producer from "./Pages/Producer";
-import Update from "./Pages/Update";
+import Upload from "./Pages/Upload";
 import Edit from "./Pages/Edit";
 import Chat from "./Pages/Chat";
 import socket from "./server";
@@ -34,7 +34,7 @@ function App() {
             <Routes>
               <Route path="/Login" element = {<Login/>}/>
               <Route path="/SignUp" element = {<SignUp/>}/>
-              <Route path="/Update" element = {<Update/>}/>
+              <Route path="/Upload" element = {<Upload/>}/>
               <Route path="/Edit" element = {<Edit/>}/>
               <Route path="/Chat" element = {<Chat/>}/>
               <Route path="/Feed" element = {<Feed/>}/>
