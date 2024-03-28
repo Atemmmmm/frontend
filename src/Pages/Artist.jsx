@@ -10,6 +10,7 @@ import Paging from '../Components/Paging';
 import './Genre.css';
 import LikeButton from '../Components/LikeButton';
 import { BiMessageSquareDetail } from "react-icons/bi";
+import axios from "axios";
 
 
 const Menu = styled.div`
@@ -29,7 +30,7 @@ const AlbumTitle = styled.div`
   padding: 0 19.5rem;
   margin: 0 auto;
   margin-bottom: 0px;
-  margin-top: 140px;
+  margin-top: 75px;
   color: white;
   align-item: left;
 `;
@@ -52,6 +53,10 @@ const FeedButton = styled.div`
   align-item: left;
   font-size: 20pt;
   font-weight: bold;
+
+  &:hover {
+    color: #777;
+  }
 `;
 
 const ArtistButton = styled.div`
@@ -59,7 +64,9 @@ const ArtistButton = styled.div`
   width: 5px;
   font-size: 20px;
   text-align: left;
-  padding: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 15px;
   color: white;
   align-item: left;
   font-size: 20pt;
@@ -73,8 +80,10 @@ const ArtistButton = styled.div`
 
 const ArtistDropdownMenu = styled.ul`
   color: white;
-  height: ${props => (props.isOpen ? '350px' : '0px')};
+  height: ${props => (props.isOpen ? '300px' : '0px')};
   overflow: hidden;
+  margin-left: -10px;
+  margin-top: -5px;
 `;
 
 const ProducerButton = styled.div`
@@ -82,7 +91,8 @@ const ProducerButton = styled.div`
   width: 5px;
   font-size: 20px;
   text-align: left;
-  padding: 15px;
+  margin-top: 20px;
+  margin-left: 15px;
   color: white;
   align-item: left;
   font-size: 20pt;
@@ -98,6 +108,8 @@ const ProducerDropdownMenu = styled.ul`
   color: white;
   height: ${props => (props.isOpen ? '350px' : '0px')};
   overflow: hidden;
+  margin-left: -10px;
+  margin-top: -5px;
 `;
 
 const AlbumGrid = styled.div`
@@ -112,10 +124,12 @@ const AlbumGrid = styled.div`
   text-align: center;
 `;
 
-const AlbumCardContent = styled.div`
+  /* 카드 앞쪽의 앨범 제목과 사진 감싸는 컨테이너 */
+  const AlbumCardContent = styled.div`
   margin-top: 10px;
 `;
 
+  /* 카드 앞쪽의 앨범 제목 */
 const AlbumName = styled.div`
   font-weight: bold;
   width: 200px;
@@ -133,6 +147,7 @@ const AlbumName = styled.div`
     100% { transform: translateX(-100%); 
 `;
 
+  /* 카드 딋쪽의 앨범 제목 */
 const AlbumCardInfo = styled.div`
   width: 200px;
   position: relative;
@@ -148,6 +163,7 @@ const AlbumCardInfo = styled.div`
   white-space: nowrap; 
 `;
 
+  /* 카드 뒷쪽의 앨범 소유자 */
 const AlbumOwnerInfo = styled.div`
   position: relative;
   top: 3px;
@@ -181,37 +197,58 @@ export default function Main() {
   const [genreStates, setGenreStates] = useState(new Array(4).fill(false));
   const [isProducerMenuOpen, setIsProducerMenuOpen] = useState(false);
   const [isArtistMenuOpen, setIsArtistMenuOpen] = useState(false);
-  const [likeCounts, setLikeCounts] = useState();
   const [currentPage, setCurrentPage] = useState(0);
   const dropdownRef = useRef(null);
+  const [albumList, setAlbumList] = React.useState([]);
 
+  const requestToServer = () => {axios.get(`http://artpro.world:8080/api/v1/boards?page=0&size=8&sort=string&category=ARTIST&orderBy=likeCount&genre=BALLAD`, {
+    headers: {
+      Authorization: ``,
+    },
+  })
+  .then((res) => {
+    console.log(res);
+    const albumList = res.data.content;
+    setAlbumList(albumList);
+    console.log(albumList);
+  }
+  );
+  }
+
+  /* 페이징 */
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
     window.scrollTo(0, 0);
   };
 
+  /* 프로듀서 버튼에 마우스 올렸을 때 */
   const handleProducerMenuMouseOver = () => {
     setIsProducerMenuOpen(true);
   };
-   
+
+  /* 프로듀서 버튼에서 마우스 뗐을 때 */
   const handleProducerMenuMouseOut = () => {
     setIsProducerMenuOpen(false);
   };
 
+  /* 아티스트 버튼에 마우스 올렸을 때 */
   const handleArtistMenuMouseOver = () => {
     setIsArtistMenuOpen(true);
   };
    
+  /* 아티스트 버튼에서 마우스 뗐을 때 */
   const handleArtistMenuMouseOut = () => {
     setIsArtistMenuOpen(false);
   };
 
+  /* 카드 앞에서 뒤로 뒤집을 때 */
   const handleClick = (index) => {
     const newCardStates = [...cardStates];
     newCardStates[index] = !newCardStates[index];
     setCardStates(newCardStates);
   };
 
+  /* 카드 뒤에서 앞으로 뒤집을 때 */
   const handleCardClose = (index) => {
     const newCardStates = [...cardStates];
     newCardStates[index] = false;
@@ -232,58 +269,6 @@ export default function Main() {
       setIsArtistMenuOpen(false);
     }
   }
-
-  const albumList = [
-    {
-      id: 1,
-      name: '고백',
-      image: 'img/test1.jpeg',
-      owner: '연진엑스',
-    },
-    {
-      id: 2,
-      name: '김연진은',
-      image: 'img/test2.jpeg',
-      owner: '연진엑스',
-
-    },
-    {
-      id: 3,
-      name: '슬프고 주저하는 연인들을 위하여',
-      image: 'img/test3.jpeg',
-      owner: '연진엑스',
-    },
-    {
-      id: 4,
-      name: '바보',
-      image: 'img/test4.jpeg',
-      owner: '연진엑스',
-    },
-    {
-      id: 5,
-      name: '쪼꼼쓰는',
-      image: 'img/test5.jpeg',
-      owner: '쪼꼼쓰',
-    },
-    {
-      id: 6,
-      name: '귀엽고',
-      image: 'img/test6.jpeg',
-      owner: '큐티파이',
-    },
-    {
-      id: 7,
-      name: '예쁘고',
-      image: 'img/test7.jpeg',
-      owner: '구미베어',
-    },
-    {
-      id: 8,
-      name: '사랑스러워 울애기들',
-      image: 'img/test8.jpeg',
-      owner: '러블리보이',
-    },
-  ];
 
   const genre = [
       {
@@ -321,7 +306,7 @@ export default function Main() {
     ]
 
   return (
-        <div style={{backgroundColor : 'black', minHeight: '100vh', padding: '20px', overflowY: 'scroll',}}>
+        <div style={{minHeight: '100vh', padding: '20px', overflowY: 'scroll',}}>
         <Header />
         <AlbumTitle>
       <div style={{ width: "185%", margin: "0" }}>
@@ -330,11 +315,11 @@ export default function Main() {
         </AlbumTitle>
         <Menu>
           <MenuLink to="/Feed">
-              <FeedButton>
-                Feed
-              </FeedButton>
-            </MenuLink>
-            <div onClick={handleClickOutside}>
+            <FeedButton>
+              Feed
+            </FeedButton>
+          </MenuLink>
+            <div onClick={requestToServer}>
               <ArtistButton
                   onMouseOver={handleArtistMenuMouseOver}
                   onMouseOut={handleArtistMenuMouseOut}
@@ -348,7 +333,6 @@ export default function Main() {
                     <p>{genre.name}</p>
                   </div>
                   ))}
-
 
                 </ArtistDropdownMenu>
             </div>
@@ -367,12 +351,11 @@ export default function Main() {
                   </div>
                   ))}
               </ProducerDropdownMenu>
-            </div>
-                
+            </div>      
         </Menu>
         
         <AlbumGrid>
-          {albumList.map((album, index) => (
+          {albumList.map((albums, index) => (
             <AlbumCardStyles key={index}>
               <div className={`album-card ${cardStates[index] ? 'flipped' : ''}`}>
                 <div
@@ -382,16 +365,16 @@ export default function Main() {
                   <AlbumCardContent>
                     <img
                       className="album-image"
-                      src={album.image}
-                      alt={album.name}
+                      src={albums.coverUrl}
+                      alt={albums.title}
                     />
-                    <AlbumName isLong={album.name.length > 12}>{album.name}</AlbumName>
+                    <AlbumName isLong={albums.title.length > 12}>{albums.title}</AlbumName>
                   </AlbumCardContent>
                 </div>
                 <div className="back">
                   <AlbumCardInfo>
-                    <AlbumName>{album.name}</AlbumName>
-                    <AlbumOwnerInfo>{album.owner}</AlbumOwnerInfo>
+                    <AlbumName>{albums.title}</AlbumName>
+                    <AlbumOwnerInfo>{albums.owner}</AlbumOwnerInfo>
                     <CloseButton onClick={() => handleCardClose(index)}>X</CloseButton>
                     {cardStates[index] && (
                       <>
