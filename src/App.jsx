@@ -12,6 +12,7 @@ import socket from "./server";
 import styled from 'styled-components';
 import './App.css';
 import video from './video/background_video.mp4';
+import { BrowserRouter } from 'react-router-dom/dist';
 
 const BackgroundVideo = styled.video`
   position: fixed; 
@@ -27,21 +28,21 @@ const BackgroundVideo = styled.video`
 
 function App() {
   return (
-      <>
+      <BrowserRouter>
             <BackgroundVideo autoPlay loop muted>
               <source src={video} type='video/mp4'/>
             </BackgroundVideo>
             <Routes>
+              <Route path="/" element = {<Feed/>}/>
               <Route path="/Login" element = {<Login/>}/>
               <Route path="/SignUp" element = {<SignUp/>}/>
               <Route path="/Update" element = {<Update/>}/>
               <Route path="/Edit" element = {<Edit/>}/>
               <Route path="/Chat" element = {<Chat/>}/>
-              <Route path="/Feed" element = {<Feed/>}/>
               <Route path="/Artist" element = {<Artist/>}/>
               <Route path="/Producer" element = {<Producer/>}/>
             </Routes>
-     </>
+     </BrowserRouter>
   );
 }
 
