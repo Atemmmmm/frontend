@@ -1,17 +1,23 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import Header from '../Components/Header';
 import LoginButton from '../Components/Button';
+import { useNavigate, withRouter } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../_actions/user_action";
+import axios from 'axios';
+import storage from 'redux-persist/lib/storage';
+import Auth from "../hoc/auth";
+import {setToken} from "../redux/reducers/AuthReducer";
 import '../App.css';
 
 const MainBackground = styled.div`
   position: relative;
   width:100vw;
   height:100vh;
-  pointer-events: none;
 `;
 
-const MainBox = styled.div`
+const MainBox = styled.form`
   width: 60%;
   max-width: 800px;
   min-width: 480px;
@@ -64,17 +70,74 @@ const WrapContent = styled.div`
 `;
 
 
-export default function Login() {
+export default function Login(props) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [Email, setEmail] = useState("");
+  const [Password, setPassword] = useState("");
+
+  const onEmailHandler = (e) => {
+    setEmail(e.currentTarget.value);
+  };
+  const onPasswordHanlder = (e) => {
+    setPassword(e.currentTarget.value);
+  };
+
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
+    //로그인을 진행하기위해서
+    //첫번째 useDispatch(액션) 을 활용해서 액션을 dispatch해준다
+    const body = {
+      email: Email,
+      password: Password,
+    };
+    
+    axios
+    .post("http://artpro.world:8080/api/v1/members", body)
+    
+    .then((response) => {
+      console.log(response);
+      if (response.status === 200) {
+        const token = response.data;
+        localStorage.setItem("accessToken", token.accessToken);
+        dispatch(loginUser());
+        console.log("로그인 성공!");
+        navigate("/");
+        localStorage.setItem("isLoggedIn", "1");
+      } else if (response.status === 400) {
+        // 로그인 실패했을 때 추가
+        console.log(response);
+        console.log("로그인 실패");
+      }
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response);
+        console.log("로그인 실패");
+        alert("로그인 실패!");
+      } else {
+        // 서버 응답이 없는 경우 (네트워크 오류 등)
+        console.error("API 요청 중 오류가 발생하였습니다.", error);
+        // console.log(error);
+        // console.log(formData);
+      }
+    });
+
+    
+  
+  };
+
   return (
     <MainBackground>
         <Header/>
        
-        <MainBox>
+        <MainBox onSubmit={onSubmitHandler}>
             <Title>LOGIN</Title>
             <WrapContent>
-                <Input placeholder="아이디를 입력해주세요" type="text"/>
+                <Input placeholder="이메일을 입력해주세요" type="email" value={Email} onChange={onEmailHandler}/>
 
-                <Input placeholder="비밀번호를 입력해주세요" type="password" />
+                <Input placeholder="비밀번호를 입력해주세요" type="password" value={Password} onChange={onPasswordHanlder} />
 
                 <LoginButton
                     color = "white"
@@ -87,6 +150,7 @@ export default function Login() {
                     fontSize={"19px"}
                     marginTop={"1.5rem"}
                     borderStyle={"none"}
+                    type="submit"
                 />
         
             </WrapContent>    
@@ -94,3 +158,4 @@ export default function Login() {
     </MainBackground>
   );
 }
+
