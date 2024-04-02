@@ -7,7 +7,6 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../_actions/user_action";
 import axios from 'axios';
 import storage from 'redux-persist/lib/storage';
-import Auth from "../hoc/auth";
 import {setToken} from "../redux/reducers/AuthReducer";
 import '../App.css';
 

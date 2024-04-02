@@ -4,7 +4,6 @@ import {Link, useNavigate} from "react-router-dom";
 import JoinButton from './Button';
 import UserButton from './Button';
 import axios from 'axios';
-import Auth from "../hoc/auth";
 import { LOGOUT_USER } from '../_actions/types';
 import { logoutUser } from '../_actions/user_action';
 import { useDispatch } from "react-redux";
@@ -201,7 +200,7 @@ export default function Header() {
                       <UserButton
                       color = "white"
                       background="#333232"
-                      width="10rem"
+                      width="fit-content"
                       height="2.5rem"
                       name={role +" "+ name}
                       borderRadius="2rem" 

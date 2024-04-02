@@ -7,7 +7,7 @@ import Radio from '../Components/Radio';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../_actions/user_action";
-import Auth from "../hoc/auth";
+
 import axios from 'axios';
 
 const MainBackground = styled.div`

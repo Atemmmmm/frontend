@@ -20,6 +20,7 @@ export const BtnStyle = styled.button`
   margin-right: ${(props) => props.marginright};
   margin-left: ${(props) => props.marginleft};
   margin-bottom: ${(props) => props.marginbottom};
+  padding: ${(props) => props.padding};
   &:hover {
     background-color: ${(props) => props.hoverBackgroundColor};
     transform: ${(props) => props.transform};
@@ -44,6 +45,7 @@ export default function Btn({
   onClick,
   transform,
   transition,
+  padding,
   hoverBackgroundColor,
 }) {
   return (
@@ -63,6 +65,7 @@ export default function Btn({
       onClick={onClick}
       transform={transform}
       transition={transition}
+      padding={padding}
       hoverBackgroundColor={hoverBackgroundColor}
     >
       {name}
