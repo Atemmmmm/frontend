@@ -2,4 +2,4 @@
 
 export const REGISTER_USER = "register_user";
 export const LOGIN_USER = "login_user";
-export const LOGOUT_USER = "LOGOUT_USER";
+export const LOGOUT_USER = "logout_user";

@@ -101,7 +101,7 @@ export default function SignUp(props) {
     };
     
     const onSubmitHandler = (e) => {
-      e.preventDefault();
+      e.preventDefault(); // 버튼 누르면 리프레시 되는 것을 막아줌
       setRole(e.currentTarget.role.value);
 
     

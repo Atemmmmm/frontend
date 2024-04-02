@@ -6,7 +6,9 @@ import { useNavigate, withRouter } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../_actions/user_action";
 import axios from 'axios';
+import storage from 'redux-persist/lib/storage';
 import Auth from "../hoc/auth";
+import {setToken} from "../redux/reducers/AuthReducer";
 import '../App.css';
 
 const MainBackground = styled.div`
@@ -90,16 +92,19 @@ export default function Login(props) {
       email: Email,
       password: Password,
     };
-
+    
     axios
     .post("http://artpro.world:8080/api/v1/members", body)
+    
     .then((response) => {
+      console.log(response);
       if (response.status === 200) {
         const token = response.data;
-        localStorage.setItem("id", token);
+        localStorage.setItem("accessToken", token.accessToken);
         dispatch(loginUser());
         console.log("로그인 성공!");
-        navigate("/feed");
+        navigate("/");
+        localStorage.setItem("isLoggedIn", "1");
       } else if (response.status === 400) {
         // 로그인 실패했을 때 추가
         console.log(response);
@@ -110,7 +115,7 @@ export default function Login(props) {
       if (error.response) {
         console.log(error.response);
         console.log("로그인 실패");
-        alert(error.response.data.error);
+        alert("로그인 실패!");
       } else {
         // 서버 응답이 없는 경우 (네트워크 오류 등)
         console.error("API 요청 중 오류가 발생하였습니다.", error);
@@ -118,6 +123,8 @@ export default function Login(props) {
         // console.log(formData);
       }
     });
+
+    
   
   };
 

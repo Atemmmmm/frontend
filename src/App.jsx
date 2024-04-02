@@ -12,7 +12,7 @@ import socket from "./server";
 import styled from 'styled-components';
 import './App.css';
 import video from './video/background_video.mp4';
-import { BrowserRouter } from 'react-router-dom/dist';
+import {useSelector} from "react-redux";
 
 const BackgroundVideo = styled.video`
   position: fixed; 
@@ -27,8 +27,10 @@ const BackgroundVideo = styled.video`
 `
 
 function App() {
+  const token = useSelector((state) => state.Auth.token);
+  console.log(token);
   return (
-      <BrowserRouter>
+      <>
             <BackgroundVideo autoPlay loop muted>
               <source src={video} type='video/mp4'/>
             </BackgroundVideo>
@@ -42,7 +44,7 @@ function App() {
               <Route path="/Artist" element = {<Artist/>}/>
               <Route path="/Producer" element = {<Producer/>}/>
             </Routes>
-     </BrowserRouter>
+     </>
   );
 }
 
