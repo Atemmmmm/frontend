@@ -7,7 +7,6 @@ import MusicPlayer from '../Components/MusicPlayer';
 import {Link, useNavigate } from "react-router-dom";
 import audioTest from '../Components/audio/audioTest.m4a';
 import Paging from '../Components/Paging';
-import './Genre.css';
 import LikeButton from '../Components/LikeButton';
 import { BiMessageSquareDetail } from "react-icons/bi";
 import axios from "axios";
@@ -174,6 +173,7 @@ const AlbumOwnerInfo = styled.div`
   overflow: hidden;
 `;
 
+/* 카드 뒷면의 닫기 버튼 */
 const CloseButton = styled.div`
   position: fixed;
   top: 7px;
@@ -194,27 +194,83 @@ const ChatButton = styled.div`
 
 export default function Main() {
   const [cardStates, setCardStates] = useState(new Array(8).fill(false));
-  const [genreStates, setGenreStates] = useState(new Array(4).fill(false));
   const [isProducerMenuOpen, setIsProducerMenuOpen] = useState(false);
   const [isArtistMenuOpen, setIsArtistMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const dropdownRef = useRef(null);
   const [albumList, setAlbumList] = React.useState([]);
+  const [Backalbum, setBackAlbum] = React.useState([]);
+  const navigate = useNavigate();
+  const [selectedGenreIndex, setSelectedGenreIndex] = useState(0);
 
-  const requestToServer = () => {axios.get(`http://artpro.world:8080/api/v1/boards?page=0&size=8&sort=string&category=ARTIST&orderBy=likeCount&genre=BALLAD`, {
+  const handleGenreChange = (index) => {
+    setSelectedGenreIndex(index);
+  };
+
+  const genreList = [
+    {
+      id: 1, name: 'BALLAD'
+    },
+    {
+      id: 2, name: 'ROCK'
+    },
+    {
+      id: 3, name: 'RAP&HIPHOP'
+    },
+    {
+      id: 4, name: 'INDIE'
+    },
+    {
+      id: 5, name: 'JAZZ'
+    },
+    {
+      id: 6, name: 'DANCE'
+    },
+    {
+      id: 7, name: 'R&B'
+    },
+    {
+      id: 8, name: 'POP'
+    } 
+  ]
+  
+  console.log(genreList);
+
+  /*앨범 뒷쪽 연동 - 음원 등록자, 음원, 좋아요 갯수 */
+  const albumBack = (id) => {axios.get(`http://artpro.world:8080/api/v1/boards/${id}`, {
     headers: {
-      Authorization: ``,
+      Authorization: `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzc3NzQG5hdmVyLmNvbSIsImlkIjo0LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTIxNDgzODh9.1HVW9sYQMsZJ4BOjjj5H9BitcXFOTIXm4Of7AqpN9DjJu4ttnMk05qC5f3OLxyY7AV5o7PgwcTEScIHPJqWEwA`,
     },
   })
   .then((res) => {
-    console.log(res);
-    const albumList = res.data.content;
-    setAlbumList(albumList);
-    console.log(albumList);
+    const Backalbum = res.data;
+    setBackAlbum(Backalbum);
+    console.log(Backalbum);
   }
   );
   }
 
+  /*앨범 앞쪽 연동 - 노래 제목, 커버 사진 */
+  const albumFront = (selectedGenre) => {axios.get(`http://artpro.world:8080/api/v1/boards?page=0&size=8&sort=string&category=ARTIST&orderCriteria=likeCount&genre=${selectedGenre}`, {
+    headers: {
+      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzc3NzQG5hdmVyLmNvbSIsImlkIjo0LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTIxNDgzODh9.1HVW9sYQMsZJ4BOjjj5H9BitcXFOTIXm4Of7AqpN9DjJu4ttnMk05qC5f3OLxyY7AV5o7PgwcTEScIHPJqWEwA`,
+    },
+  })
+  .then((res, genreList) => {
+    const albumList = res.data.content;
+    setAlbumList(albumList);
+    console.log(albumList);
+    const selectedGenre = genreList[selectedGenreIndex]?.name;
+    if (!selectedGenre) {
+      console.error('Selected genre is invalid:', selectedGenreIndex);
+      return;
+    }
+  }
+  )
+  .catch(error => {
+    console.error('Error fetching albums for selected genre:', error);
+  });
+  }
   /* 페이징 */
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
@@ -242,10 +298,11 @@ export default function Main() {
   };
 
   /* 카드 앞에서 뒤로 뒤집을 때 */
-  const handleClick = (index) => {
+  const handleCardClick = (index, id) => {
     const newCardStates = [...cardStates];
     newCardStates[index] = !newCardStates[index];
     setCardStates(newCardStates);
+    albumBack(id);
   };
 
   /* 카드 뒤에서 앞으로 뒤집을 때 */
@@ -255,13 +312,13 @@ export default function Main() {
     setCardStates(newCardStates);
   };
 
-  const navigate = useNavigate();
-  const onClickArtistGenreBtn = (genre) => () => {
-    navigate(`?category=artist&genre=${genre.name}`);
+  const onClickArtistGenreBtn = (genreList) => () => {
+    navigate(`?category=artist&genre=${genreList.name}`);
+    albumFront(genreList.name);
   };
 
-  const onClickProducerGenreBtn = (genre) => () => {
-    navigate(`?category=producer&genre=${genre.name}`);
+  const onClickProducerGenreBtn = (genreList) => () => {
+    navigate(`?category=producer&genre=${genreList.name}`);
   };
 
   const handleClickOutside = (event) => {
@@ -270,48 +327,13 @@ export default function Main() {
     }
   }
 
-  const genre = [
-      {
-        id: 1,
-        name: 'POP'
-      },
-      {
-        id: 2,
-        name: 'ROCK'
-      },
-      {
-        id: 3,
-        name: 'RAP&HIPHOP'
-      },
-      {
-        id: 4,
-        name: 'INDIE'
-      },
-      {
-        id: 5,
-        name: 'JAZZ'
-      },
-      {
-        id: 6,
-        name: 'DANCE'
-      },
-      {
-        id: 7,
-        name: 'R&B'
-      },
-      {
-        id: 8,
-        name: 'BALLAD'
-      } 
-    ]
-
   return (
-        <div style={{minHeight: '100vh', padding: '20px', overflowY: 'scroll',}}>
+        <div style={{minHeight: '100vh', padding: '20px'}}>
         <Header />
         <AlbumTitle>
       <div style={{ width: "185%", margin: "0" }}>
       </div>
-        <h4>{genreStates}좋아요를 많이 받은 곡</h4>
+        <h4>{genreList.name} 좋아요를 많이 받은 곡</h4>
         </AlbumTitle>
         <Menu>
           <MenuLink to="/Feed">
@@ -319,17 +341,16 @@ export default function Main() {
               Feed
             </FeedButton>
           </MenuLink>
-            <div onClick={requestToServer}>
+            <div onClick={() => (albumFront)}>
               <ArtistButton
                   onMouseOver={handleArtistMenuMouseOver}
-                  onMouseOut={handleArtistMenuMouseOut}
                 >
                   Artist
               </ArtistButton>
-                <ArtistDropdownMenu isOpen={isArtistMenuOpen} ref={dropdownRef}
+                <ArtistDropdownMenu isOpen={isArtistMenuOpen}
                 >
-                  {genre.map((genre, index) => (
-                  <div key={index} onClick={onClickArtistGenreBtn(genre)}>
+                  {genreList.map((genre, index) => (
+                  <div key={index} onClick={onClickArtistGenreBtn(genre.name)}>
                     <p>{genre.name}</p>
                   </div>
                   ))}
@@ -345,8 +366,8 @@ export default function Main() {
                 </ProducerButton>
                 <ProducerDropdownMenu isOpen={isProducerMenuOpen} ref={dropdownRef}
                 >
-                  {genre.map((genre, index) => (
-                  <div key={index} onClick={onClickProducerGenreBtn(genre)}>
+                  {genreList.map((genre, index) => (
+                  <div key={index} onClick={onClickProducerGenreBtn(genre.name)}>
                     <p>{genre.name}</p>
                   </div>
                   ))}
@@ -355,12 +376,12 @@ export default function Main() {
         </Menu>
         
         <AlbumGrid>
-          {albumList.map((albums, index) => (
+          {albumList && albumList.map((albums, index) => (
             <AlbumCardStyles key={index}>
               <div className={`album-card ${cardStates[index] ? 'flipped' : ''}`}>
                 <div
                   className="front"
-                  onClick={() => handleClick(index)}
+                  onClick={() => handleCardClick(index, albums.id) }
                 >
                   <AlbumCardContent>
                     <img
@@ -373,12 +394,12 @@ export default function Main() {
                 </div>
                 <div className="back">
                   <AlbumCardInfo>
-                    <AlbumName>{albums.title}</AlbumName>
-                    <AlbumOwnerInfo>{albums.owner}</AlbumOwnerInfo>
+                    <AlbumName>{Backalbum.title}</AlbumName>
+                    <AlbumOwnerInfo>{Backalbum.nickname}</AlbumOwnerInfo>
                     <CloseButton onClick={() => handleCardClose(index)}>X</CloseButton>
                     {cardStates[index] && (
                       <>
-                        <MusicPlayer audioSrc={audioTest} />
+                        <MusicPlayer audioSrc={Backalbum.songUrl} />
                         <LikeButton/>
                         <Link to="/Chat">
                           <ChatButton>
