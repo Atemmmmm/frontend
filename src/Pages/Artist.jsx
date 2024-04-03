@@ -194,6 +194,7 @@ const ChatButton = styled.div`
 
 export default function Main() {
   const [cardStates, setCardStates] = useState(new Array(8).fill(false));
+  const [selectedCardIndex, setSelectedCardIndex] = useState(null);
   const [isProducerMenuOpen, setIsProducerMenuOpen] = useState(false);
   const [isArtistMenuOpen, setIsArtistMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -203,9 +204,6 @@ export default function Main() {
   const navigate = useNavigate();
   const [selectedGenreIndex, setSelectedGenreIndex] = useState(0);
 
-  const handleGenreChange = (index) => {
-    setSelectedGenreIndex(index);
-  };
 
   const genreList = [
     {
@@ -234,8 +232,6 @@ export default function Main() {
     } 
   ]
   
-  console.log(genreList);
-
   /*앨범 뒷쪽 연동 - 음원 등록자, 음원, 좋아요 갯수 */
   const albumBack = (id) => {axios.get(`http://artpro.world:8080/api/v1/boards/${id}`, {
     headers: {
@@ -245,7 +241,6 @@ export default function Main() {
   .then((res) => {
     const Backalbum = res.data;
     setBackAlbum(Backalbum);
-    console.log(Backalbum);
   }
   );
   }
@@ -259,17 +254,16 @@ export default function Main() {
   .then((res, genreList) => {
     const albumList = res.data.content;
     setAlbumList(albumList);
-    console.log(albumList);
-    const selectedGenre = genreList[selectedGenreIndex]?.name;
-    if (!selectedGenre) {
-      console.error('Selected genre is invalid:', selectedGenreIndex);
-      return;
-    }
-  }
-  )
-  .catch(error => {
-    console.error('Error fetching albums for selected genre:', error);
-  });
+      if (!albumList || albumList.length === 0) {
+        console.warn('No albums found for selected genre:', selectedGenre);
+        // 선택된 장르에 표시할 앨범이 없는 경우
+      } else {
+        setAlbumList(albumList);
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching albums for selected genre:', error);
+    });
   }
   /* 페이징 */
   const handlePageChange = ({ selected }) => {
@@ -299,26 +293,43 @@ export default function Main() {
 
   /* 카드 앞에서 뒤로 뒤집을 때 */
   const handleCardClick = (index, id) => {
-    const newCardStates = [...cardStates];
-    newCardStates[index] = !newCardStates[index];
-    setCardStates(newCardStates);
+    if (selectedCardIndex !== null) {
+      const updatedStates = [...cardStates];
+      updatedStates[selectedCardIndex] = false;
+      setCardStates(updatedStates);
+      setSelectedCardIndex(null);
+      return;
+    }
+
+    /* 선택된 카드 뒤집기 */
+    const updatedStates = [...cardStates];
+    updatedStates[index] = true;
+    setCardStates(updatedStates);
+    setSelectedCardIndex(index);
     albumBack(id);
   };
 
   /* 카드 뒤에서 앞으로 뒤집을 때 */
   const handleCardClose = (index) => {
-    const newCardStates = [...cardStates];
-    newCardStates[index] = false;
-    setCardStates(newCardStates);
+    const updatedStates = [...cardStates];
+    updatedStates[index] = false;
+    setCardStates(updatedStates);
+    setSelectedCardIndex(null);
   };
 
-  const onClickArtistGenreBtn = (genreList) => () => {
-    navigate(`?category=artist&genre=${genreList.name}`);
-    albumFront(genreList.name);
+  /* 아티스트 하위 장르 선택하기 */
+  const onClickArtistGenreBtn = (genre) => () => {
+
+    // 선택된 장르로 navigate 및 albumFront 호출
+    navigate(`?category=artist&genre=${genre.name}`);
+    albumFront(genre.name);
   };
 
-  const onClickProducerGenreBtn = (genreList) => () => {
-    navigate(`?category=producer&genre=${genreList.name}`);
+  const onClickProducerGenreBtn = (genre) => () => {
+    
+    // 선택된 장르로 navigate 및 albumFront 호출
+    navigate(`?category=producer&genre=${genre.name}`);
+    albumFront(genre.name);
   };
 
   const handleClickOutside = (event) => {
@@ -350,7 +361,7 @@ export default function Main() {
                 <ArtistDropdownMenu isOpen={isArtistMenuOpen}
                 >
                   {genreList.map((genre, index) => (
-                  <div key={index} onClick={onClickArtistGenreBtn(genre.name)}>
+                  <div key={index} onClick={onClickArtistGenreBtn(genre)}>
                     <p>{genre.name}</p>
                   </div>
                   ))}
@@ -367,7 +378,7 @@ export default function Main() {
                 <ProducerDropdownMenu isOpen={isProducerMenuOpen} ref={dropdownRef}
                 >
                   {genreList.map((genre, index) => (
-                  <div key={index} onClick={onClickProducerGenreBtn(genre.name)}>
+                  <div key={index} onClick={onClickProducerGenreBtn(genre)}>
                     <p>{genre.name}</p>
                   </div>
                   ))}
