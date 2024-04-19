@@ -175,7 +175,7 @@ export default function Header() {
 
   const logoutClickHandler = () => {
       setIsLoggedIn(false);
-      localStorage.removeItem("id");
+      localStorage.removeItem("accessToken");
       localStorage.removeItem("isLoggedIn");
       dispatch(logoutUser());
       alert("로그아웃되었습니다.");
@@ -225,7 +225,7 @@ export default function Header() {
         <Menu isDropped={DropIsOpen}>
           <Ul>
             <Li>
-              <LinkWrapper href="/Update">Upload</LinkWrapper>
+              <LinkWrapper href="/Upload">Upload</LinkWrapper>
             </Li>
             <Li>
               <LinkWrapper href="/MyPage">My Feed</LinkWrapper>

@@ -33,7 +33,7 @@ const SelectOptions = styled.ul`
   left: 0;
   width: 100%;
   overflow: hidden;
-  height: 300px;
+  height: 250px;
   max-height: ${(props) => (props.show ? "none" : "0")};
   padding: 0;
   border-radius: 8px;
@@ -52,6 +52,7 @@ const Option = styled.li`
 `;
 
 
+
 const CustomSelect = (option) => {
     const [currentValue, setCurrentValue] = useState("장르 선택");
     const [showOptions, setShowOptions] = useState(false);
@@ -59,9 +60,9 @@ const CustomSelect = (option) => {
     const handleOnChangeSelectValue = (e) => {
         const { innerText } = e.target;
         setCurrentValue(innerText);
-      };
+    };
     
-    console.log(option);
+    
   
     return (
       <SelectBox onClick={() => setShowOptions((prev) => !prev)}>
@@ -72,6 +73,7 @@ const CustomSelect = (option) => {
             key={data.key}
             value={data.value}
             onClick={handleOnChangeSelectValue}
+            
           >
             {data.value}
           </Option>
@@ -79,6 +81,8 @@ const CustomSelect = (option) => {
       </SelectOptions>
     </SelectBox>
     );
+    
   };
-
+  
+  
 export default CustomSelect;

@@ -114,7 +114,7 @@ export default function SignUp(props) {
           role: Role,
         };
         axios
-        .post("http://artpro.world:8080/api/v1/auth", body)
+        .post(`http://artpro.world:8080/api/v1/auth`, body)
         .then((response) => {
           if (response.status === 201) {
             dispatch(registerUser());
