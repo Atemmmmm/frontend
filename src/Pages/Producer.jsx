@@ -7,9 +7,9 @@ import MusicPlayer from '../Components/MusicPlayer';
 import {Link, useNavigate } from "react-router-dom";
 import audioTest from '../Components/audio/audioTest.m4a';
 import Paging from '../Components/Paging';
-import './Genre.css';
 import LikeButton from '../Components/LikeButton';
 import { BiMessageSquareDetail } from "react-icons/bi";
+import axios from "axios";
 
 
 const Menu = styled.div`
@@ -29,7 +29,7 @@ const AlbumTitle = styled.div`
   padding: 0 19.5rem;
   margin: 0 auto;
   margin-bottom: 0px;
-  margin-top: 140px;
+  margin-top: 75px;
   color: white;
   align-item: left;
 `;
@@ -52,6 +52,10 @@ const FeedButton = styled.div`
   align-item: left;
   font-size: 20pt;
   font-weight: bold;
+
+  &:hover {
+    color: #777;
+  }
 `;
 
 const ArtistButton = styled.div`
@@ -59,7 +63,9 @@ const ArtistButton = styled.div`
   width: 5px;
   font-size: 20px;
   text-align: left;
-  padding: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 15px;
   color: white;
   align-item: left;
   font-size: 20pt;
@@ -73,8 +79,10 @@ const ArtistButton = styled.div`
 
 const ArtistDropdownMenu = styled.ul`
   color: white;
-  height: ${props => (props.isOpen ? '350px' : '0px')};
+  height: ${props => (props.isOpen ? '300px' : '0px')};
   overflow: hidden;
+  margin-left: -10px;
+  margin-top: -5px;
 `;
 
 const ProducerButton = styled.div`
@@ -82,7 +90,8 @@ const ProducerButton = styled.div`
   width: 5px;
   font-size: 20px;
   text-align: left;
-  padding: 15px;
+  margin-top: 20px;
+  margin-left: 15px;
   color: white;
   align-item: left;
   font-size: 20pt;
@@ -98,6 +107,8 @@ const ProducerDropdownMenu = styled.ul`
   color: white;
   height: ${props => (props.isOpen ? '350px' : '0px')};
   overflow: hidden;
+  margin-left: -10px;
+  margin-top: -5px;
 `;
 
 const AlbumGrid = styled.div`
@@ -112,10 +123,12 @@ const AlbumGrid = styled.div`
   text-align: center;
 `;
 
-const AlbumCardContent = styled.div`
+  /* 카드 앞쪽의 앨범 제목과 사진 감싸는 컨테이너 */
+  const AlbumCardContent = styled.div`
   margin-top: 10px;
 `;
 
+  /* 카드 앞쪽의 앨범 제목 */
 const AlbumName = styled.div`
   font-weight: bold;
   width: 200px;
@@ -133,6 +146,7 @@ const AlbumName = styled.div`
     100% { transform: translateX(-100%); 
 `;
 
+  /* 카드 딋쪽의 앨범 제목 */
 const AlbumCardInfo = styled.div`
   width: 200px;
   position: relative;
@@ -148,6 +162,7 @@ const AlbumCardInfo = styled.div`
   white-space: nowrap; 
 `;
 
+  /* 카드 뒷쪽의 앨범 소유자 */
 const AlbumOwnerInfo = styled.div`
   position: relative;
   top: 3px;
@@ -158,6 +173,7 @@ const AlbumOwnerInfo = styled.div`
   overflow: hidden;
 `;
 
+/* 카드 뒷면의 닫기 버튼 */
 const CloseButton = styled.div`
   position: fixed;
   top: 7px;
@@ -178,53 +194,143 @@ const ChatButton = styled.div`
 
 export default function Main() {
   const [cardStates, setCardStates] = useState(new Array(8).fill(false));
-  const [genreStates, setGenreStates] = useState(new Array(4).fill(false));
+  const [selectedCardIndex, setSelectedCardIndex] = useState(null);
   const [isProducerMenuOpen, setIsProducerMenuOpen] = useState(false);
   const [isArtistMenuOpen, setIsArtistMenuOpen] = useState(false);
-  const [likeCounts, setLikeCounts] = useState();
   const [currentPage, setCurrentPage] = useState(0);
   const dropdownRef = useRef(null);
+  const [albumList, setAlbumList] = React.useState([]);
+  const [Backalbum, setBackAlbum] = React.useState([]);
+  const navigate = useNavigate();
+  const [selectedGenreIndex, setSelectedGenreIndex] = useState(0);
 
+
+  const genreList = [
+    {
+      id: 1, name: 'BALLAD'
+    },
+    {
+      id: 2, name: 'ROCK'
+    },
+    {
+      id: 3, name: 'RAP&HIPHOP'
+    },
+    {
+      id: 4, name: 'INDIE'
+    },
+    {
+      id: 5, name: 'JAZZ'
+    },
+    {
+      id: 6, name: 'DANCE'
+    },
+    {
+      id: 7, name: 'R&B'
+    },
+    {
+      id: 8, name: 'POP'
+    } 
+  ]
+  
+  /*앨범 뒷쪽 연동 - 음원 등록자, 음원, 좋아요 갯수 */
+  const albumBack = (id) => {axios.get(`http://artpro.world:8080/api/v1/boards/${id}`, {
+    headers: {
+      Authorization: `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzc3NzQG5hdmVyLmNvbSIsImlkIjo0LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTIxNDgzODh9.1HVW9sYQMsZJ4BOjjj5H9BitcXFOTIXm4Of7AqpN9DjJu4ttnMk05qC5f3OLxyY7AV5o7PgwcTEScIHPJqWEwA`,
+    },
+  })
+  .then((res) => {
+    const Backalbum = res.data;
+    console(Backalbum);
+    setBackAlbum(Backalbum);
+  }
+  );
+  }
+
+  /*앨범 앞쪽 연동 - 노래 제목, 커버 사진 */
+  const albumFront = (selectedGenre) => {axios.get(`http://artpro.world:8080/api/v1/boards?page=0&size=8&sort=string&category=PRODUCER&orderCriteria=likeCount&genre=${selectedGenre}`, {
+    headers: {
+      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzc3NzQG5hdmVyLmNvbSIsImlkIjo0LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTIxNDgzODh9.1HVW9sYQMsZJ4BOjjj5H9BitcXFOTIXm4Of7AqpN9DjJu4ttnMk05qC5f3OLxyY7AV5o7PgwcTEScIHPJqWEwA`,
+    },
+  })
+  .then((res, genreList) => {
+    const albumList = res.data.content;
+    setAlbumList(albumList);
+      // 선택된 장르에 표시할 앨범이 없는 경우
+      if (!albumList || albumList.length === 0) {
+        console.warn('No albums found for selected genre:', selectedGenre);
+      } else {
+        setAlbumList(albumList);
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching albums for selected genre:', error);
+    });
+  }
+  /* 페이징 */
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
     window.scrollTo(0, 0);
   };
 
+  /* 프로듀서 버튼에 마우스 올렸을 때 */
   const handleProducerMenuMouseOver = () => {
     setIsProducerMenuOpen(true);
   };
-   
+
+  /* 프로듀서 버튼에서 마우스 뗐을 때 */
   const handleProducerMenuMouseOut = () => {
     setIsProducerMenuOpen(false);
   };
 
+  /* 아티스트 버튼에 마우스 올렸을 때 */
   const handleArtistMenuMouseOver = () => {
     setIsArtistMenuOpen(true);
   };
    
+  /* 아티스트 버튼에서 마우스 뗐을 때 */
   const handleArtistMenuMouseOut = () => {
     setIsArtistMenuOpen(false);
   };
 
-  const handleClick = (index) => {
-    const newCardStates = [...cardStates];
-    newCardStates[index] = !newCardStates[index];
-    setCardStates(newCardStates);
+  /* 카드 앞에서 뒤로 뒤집을 때 */
+  const handleCardClick = (index, id) => {
+    if (selectedCardIndex !== null) {
+      const updatedStates = [...cardStates];
+      updatedStates[selectedCardIndex] = false;
+      setCardStates(updatedStates);
+      setSelectedCardIndex(null);
+      return;
+    }
+
+    /* 선택된 카드 뒤집기 */
+    const updatedStates = [...cardStates];
+    updatedStates[index] = true;
+    setCardStates(updatedStates);
+    setSelectedCardIndex(index);
+    albumBack(id);
   };
 
+  /* 카드 뒤에서 앞으로 뒤집을 때 */
   const handleCardClose = (index) => {
-    const newCardStates = [...cardStates];
-    newCardStates[index] = false;
-    setCardStates(newCardStates);
+    const updatedStates = [...cardStates];
+    updatedStates[index] = false;
+    setCardStates(updatedStates);
+    setSelectedCardIndex(null);
   };
 
-  const navigate = useNavigate();
+  /* 아티스트 하위 장르 선택하기 */
   const onClickArtistGenreBtn = (genre) => () => {
+
+    // 선택된 장르로 navigate 및 albumFront 호출
     navigate(`?category=artist&genre=${genre.name}`);
+    albumFront(genre.name);
   };
 
   const onClickProducerGenreBtn = (genre) => () => {
+    
+    // 선택된 장르로 navigate 및 albumFront 호출
     navigate(`?category=producer&genre=${genre.name}`);
+    albumFront(genre.name);
   };
 
   const handleClickOutside = (event) => {
@@ -233,121 +339,34 @@ export default function Main() {
     }
   }
 
-  const albumList = [
-    {
-      id: 1,
-      name: '고백',
-      image: 'img/test1.jpeg',
-      owner: '연진엑스',
-    },
-    {
-      id: 2,
-      name: '김연진은',
-      image: 'img/test2.jpeg',
-      owner: '연진엑스',
-
-    },
-    {
-      id: 3,
-      name: '슬프고 주저하는 연인들을 위하여 앞으로 갔다가 뒤로 갔다가 그랜절 쿠크르삥뽕',
-      image: 'img/test3.jpeg',
-      owner: '연진엑스',
-    },
-    {
-      id: 4,
-      name: '바보',
-      image: 'img/test4.jpeg',
-      owner: '연진엑스',
-    },
-    {
-      id: 5,
-      name: '쪼꼼쓰는',
-      image: 'img/test5.jpeg',
-      owner: '쪼꼼쓰',
-    },
-    {
-      id: 6,
-      name: '귀엽고',
-      image: 'img/test6.jpeg',
-      owner: '큐티파이',
-    },
-    {
-      id: 7,
-      name: '예쁘고',
-      image: 'img/test7.jpeg',
-      owner: '구미베어',
-    },
-    {
-      id: 8,
-      name: '사랑스러워 울애기들',
-      image: 'img/test8.jpeg',
-      owner: '러블리보이',
-    },
-  ];
-
-  const genre = [
-      {
-        id: 1,
-        name: 'POP'
-      },
-      {
-        id: 2,
-        name: 'ROCK'
-      },
-      {
-        id: 3,
-        name: 'RAP&HIPHOP'
-      },
-      {
-        id: 4,
-        name: 'INDIE'
-      },
-      {
-        id: 5,
-        name: 'JAZZ'
-      },
-      {
-        id: 6,
-        name: 'DANCE'
-      },
-      {
-        id: 7,
-        name: 'R&B'
-      },
-      {
-        id: 8,
-        name: 'BALLAD'
-      } 
-    ]
-
   return (
-        <div style={{backgroundColor : 'black', minHeight: '100vh', padding: '20px', overflowY: 'scroll',}}>
+        <div style={{minHeight: '100vh', padding: '20px'}}>
         <Header />
         <AlbumTitle>
       <div style={{ width: "185%", margin: "0" }}>
       </div>
-        <h4>{genre.name}좋아요를 많이 받은 곡</h4>
+        <h4>{genreList.name} 좋아요를 많이 받은 곡</h4>
         </AlbumTitle>
         <Menu>
           <MenuLink to="/Feed">
-              <FeedButton>
-                Feed
-              </FeedButton>
-            </MenuLink>
-            <div onClick={handleClickOutside}>
+            <FeedButton>
+              Feed
+            </FeedButton>
+          </MenuLink>
+            <div onClick={() => (albumFront)}>
               <ArtistButton
                   onMouseOver={handleArtistMenuMouseOver}
-                  onMouseOut={handleArtistMenuMouseOut}
                 >
                   Artist
               </ArtistButton>
-                <ArtistDropdownMenu isOpen={isArtistMenuOpen} ref={dropdownRef}
+                <ArtistDropdownMenu isOpen={isArtistMenuOpen}
                 >
-                  {genre.map((genre, index) => (
+                  {genreList.map((genre, index) => (
                   <div key={index} onClick={onClickArtistGenreBtn(genre)}>
                     <p>{genre.name}</p>
                   </div>
                   ))}
+
                 </ArtistDropdownMenu>
             </div>
               
@@ -359,40 +378,40 @@ export default function Main() {
                 </ProducerButton>
                 <ProducerDropdownMenu isOpen={isProducerMenuOpen} ref={dropdownRef}
                 >
-                  {genre.map((genre, index) => (
+                  {genreList.map((genre, index) => (
                   <div key={index} onClick={onClickProducerGenreBtn(genre)}>
                     <p>{genre.name}</p>
                   </div>
                   ))}
               </ProducerDropdownMenu>
-            </div>       
+            </div>      
         </Menu>
         
         <AlbumGrid>
-          {albumList.map((album, index) => (
+          {albumList && albumList.map((albums, index) => (
             <AlbumCardStyles key={index}>
               <div className={`album-card ${cardStates[index] ? 'flipped' : ''}`}>
                 <div
                   className="front"
-                  onClick={() => handleClick(index)}
+                  onClick={() => handleCardClick(index, albums.id) }
                 >
                   <AlbumCardContent>
                     <img
                       className="album-image"
-                      src={album.image}
-                      alt={album.name}
+                      src={albums.coverUrl}
+                      alt={albums.title}
                     />
-                    <AlbumName isLong={album.name.length > 12}>{album.name}</AlbumName>
+                    <AlbumName isLong={albums.title.length > 12}>{albums.title}</AlbumName>
                   </AlbumCardContent>
                 </div>
                 <div className="back">
                   <AlbumCardInfo>
-                    <AlbumName>{album.name}</AlbumName>
-                    <AlbumOwnerInfo>{album.owner}</AlbumOwnerInfo>
+                    <AlbumName>{Backalbum.title}</AlbumName>
+                    <AlbumOwnerInfo>{Backalbum.nickname}</AlbumOwnerInfo>
                     <CloseButton onClick={() => handleCardClose(index)}>X</CloseButton>
                     {cardStates[index] && (
                       <>
-                        <MusicPlayer audioSrc={audioTest} />
+                        <MusicPlayer audioSrc={Backalbum.songUrl} />
                         <LikeButton/>
                         <Link to="/Chat">
                           <ChatButton>
