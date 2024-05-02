@@ -203,6 +203,7 @@ export default function Main() {
   const [Backalbum, setBackAlbum] = React.useState([]);
   const navigate = useNavigate();
   const [selectedGenreIndex, setSelectedGenreIndex] = useState(0);
+  const [selectedAlbumId, setSelectedAlbumId] = useState(null); // 선택한 곡의 ID를 저장하는 상태
 
 
   const genreList = [
@@ -235,7 +236,7 @@ export default function Main() {
   /*앨범 뒷쪽 연동 - 음원 등록자, 음원, 좋아요 갯수 */
   const albumBack = (id) => {axios.get(`http://artpro.world:8080/api/v1/boards/${id}`, {
     headers: {
-      Authorization: `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzc3NzQG5hdmVyLmNvbSIsImlkIjo0LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTIxNDgzODh9.1HVW9sYQMsZJ4BOjjj5H9BitcXFOTIXm4Of7AqpN9DjJu4ttnMk05qC5f3OLxyY7AV5o7PgwcTEScIHPJqWEwA`,
+      Authorization: `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjM0QG5hdmVyLmNvbSIsImlkIjo2LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTQ3MTMyODV9.N0tNq5vvsvjIJqcVB2cG05OwpKLQaEQ1VihL-uOuOXEL3dDmVGYJWDW746FM1jHH-mYMuazn4XVPHVvvhbcCww`,
     },
   })
   .then((res) => {
@@ -248,7 +249,7 @@ export default function Main() {
   /*앨범 앞쪽 연동 - 노래 제목, 커버 사진 */
   const albumFront = (selectedGenre) => {axios.get(`http://artpro.world:8080/api/v1/boards?page=0&size=8&sort=string&category=ARTIST&orderCriteria=likeCount&genre=${selectedGenre}`, {
     headers: {
-      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzc3NzQG5hdmVyLmNvbSIsImlkIjo0LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTIxNDgzODh9.1HVW9sYQMsZJ4BOjjj5H9BitcXFOTIXm4Of7AqpN9DjJu4ttnMk05qC5f3OLxyY7AV5o7PgwcTEScIHPJqWEwA`,
+      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjM0QG5hdmVyLmNvbSIsImlkIjo2LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTQ3MTMyODV9.N0tNq5vvsvjIJqcVB2cG05OwpKLQaEQ1VihL-uOuOXEL3dDmVGYJWDW746FM1jHH-mYMuazn4XVPHVvvhbcCww`,
     },
   })
   .then((res, genreList) => {
@@ -411,7 +412,7 @@ export default function Main() {
                     {cardStates[index] && (
                       <>
                         <MusicPlayer audioSrc={Backalbum.songUrl} />
-                        <LikeButton/>
+                        <LikeButton Backalbum={Backalbum} />                      
                         <Link to="/Chat">
                           <ChatButton>
                             <BiMessageSquareDetail />
