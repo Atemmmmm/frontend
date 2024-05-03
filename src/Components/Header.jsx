@@ -1,13 +1,22 @@
 import React, {useState, useRef, useEffect} from 'react';
 import styled,{css} from 'styled-components';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import JoinButton from './Button';
+import UserButton from './Button';
+import axios from 'axios';
+import { LOGOUT_USER } from '../_actions/types';
+import { logoutUser } from '../_actions/user_action';
+import { useDispatch } from "react-redux";
+import token from '../Pages/Login';
+import {useSelector} from 'react-redux';
 
 const HeaderWrapper = styled.div`
   position: fiexd;
   display: flex;
   height: 5rem;
-  align-items:center;
+  align-items: center;
+  width: 100%;    
+  justify-content: space-between;
 `;
 
 const Title = styled.h1`
@@ -22,8 +31,7 @@ const Title = styled.h1`
 `;
 
 const ButtonWrap = styled.div`
-  float: right;
-  margin-left: 60rem;
+  margin-right: 40px;
 `
 
 const useDetectClose = (initialState) => {
@@ -55,29 +63,26 @@ const useDetectClose = (initialState) => {
 };
 
 
-export const OptionsData = [
-  {key: "Upload", value: "Upload"}, 
-  {key: "MyPage", value: "MyPage"},
-  {key: "Feed", value: "Feed"}, 
-  {key: "Chat", value: "Chat"},
-  {key: "Logout", value: "Logout"}
-];
+const DropdownContainer = styled.div`
+  position: relative;
+  text-align: center;
+`;
 
 const Menu = styled.div`
   background: gray;
   position: absolute;
-  top: 52px;
+  top: 50px;
   left: 50%;
-  right: 10px;
   width: 100px;
   text-align: center;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
   border-radius: 3px;
   opacity: 0;
   visibility: hidden;
-  transform: translate(-50%, -20px);
+  transform: translate(-50%, -20%);
   transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
   z-index: 9;
+  cursor: pointer;
 
   &:after {
     content: "";
@@ -123,71 +128,119 @@ const Ul = styled.ul`
 const Li = styled.li``;
 
 const LinkWrapper = styled.a`
-  font-size: 16px;
+  font-size: 18px;
   text-decoration: none;
   color: white;
 `;
 
-const Logout = styled.div`
-  cursor: pointer;
-  font-size: 16px;
-  display: block;
-  text-decoration: none;
-  color: white;
-  font-size: 19px;
-`;
-
-const DropdownContainer = styled.div`
-  position: relative;
-  text-align: center;
-`;
 
 export default function Header() {
-  const [myPageIsOpen, myPageRef, myPageHandler] = useDetectClose(false);
-  const [boardIsOpen, boardRef, boardHandler] = useDetectClose(false);
+  const [DropIsOpen, DropRef, DropHandler] = useDetectClose(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState("");
+  const [name, setName] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const storedUserLoggedInInformation = localStorage.getItem("isLoggedIn");
+    if (storedUserLoggedInInformation === "1") {
+      setIsLoggedIn(true);
+      const token = localStorage.getItem("accessToken");
+    // token이 없을 때
+    if (!token) {
+      alert("사용자가 아닙니다.");
+      return;
+    }
+      axios.get("http://artpro.world:8080/api/v1/members", 
+        {
+        	headers: {
+              'Content-Type': 'application/json',
+               Authorization: `Bearer ${token}`,
+          },
+        }
+      ).then((res) =>{
+        setRole(res.data.role);
+        setName(res.data.nickname)
+      
+
+      }).catch((err) => {
+        console.log(err)
+      
+      })
+    }
+  }, []);
+
+
 
   const logoutClickHandler = () => {
-    console.log("logout");
+      setIsLoggedIn(false);
+      localStorage.removeItem("id");
+      localStorage.removeItem("isLoggedIn");
+      dispatch(logoutUser());
+      alert("로그아웃되었습니다.");
+      navigate("/");
+  
   };
+  const JoinClickHandler = () =>{
+    navigate("/SignUp");
+    setIsLoggedIn(false);
+  }
+
+    
+  
 
   return (
     <HeaderWrapper>
-      <Title>ArtPro</Title>
-      <Link>
+      <Link to='/'>
+        <Title>ArtPro</Title>
+      </Link>
       <ButtonWrap>
-        <JoinButton
-                    color = "white"
-                    background="#333232"
-                    width="5rem"
-                    height="2rem"
-                    name="JOIN"
-                    borderRadius="2rem" 
-                    fontSize={"20px"}
-                    borderStyle={"none"}
-                    marginRight={"0px"}
-                    onClick={myPageHandler} ref={myPageRef}
-                />    
-      </ButtonWrap> 
-        </Link>
+      {isLoggedIn && 
+                      <UserButton
+                      color = "white"
+                      background="#333232"
+                      width="fit-content"
+                      height="2.5rem"
+                      name={role +" "+ name}
+                      borderRadius="2rem" 
+                      fontSize={"21px"}
+                      borderStyle={"none"}
+                      onClick={DropHandler} 
+                      ref={DropRef}/>}
+       
 
-        <DropdownContainer>
-        <Menu $isDropped={myPageIsOpen}>
+      <DropdownContainer>
+      {!isLoggedIn && <JoinButton
+                      color = "white"
+                      background="#333232"
+                      width="5rem"
+                      height="2.5rem"
+                      name="JOIN"
+                      borderRadius="2rem" 
+                      fontSize={"21px"}
+                      borderStyle={"none"}
+                      onClick={JoinClickHandler}/>}
+      
+        <Menu isDropped={DropIsOpen}>
           <Ul>
             <Li>
               <LinkWrapper href="/Update">Upload</LinkWrapper>
             </Li>
             <Li>
-              <LinkWrapper href="/MyPage">MyFeed</LinkWrapper>
+              <LinkWrapper href="/MyPage">My Feed</LinkWrapper>
             </Li>
             <Li>
               <LinkWrapper href="/Chat">Chat</LinkWrapper>
             </Li>
             <Li>
-              <LinkWrapper href="Logout">Logout</LinkWrapper>
+              <LinkWrapper onClick={() => {logoutClickHandler(); 
+                                            DropHandler();}}>Logout</LinkWrapper>
             </Li>
           </Ul>
         </Menu>
         </DropdownContainer>
+        </ButtonWrap> 
     </HeaderWrapper>
   );
 }
