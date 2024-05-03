@@ -20,7 +20,7 @@ root.render(
           <App/>
         </BrowserRouter>
       </PersistGate>
-  </Provider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

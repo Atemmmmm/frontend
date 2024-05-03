@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { TbPlayerPlay, TbPlayerPause } from "react-icons/tb";
+import axios from "axios";
 
 
 const AudioPlayerContainer = styled.div`
@@ -72,6 +73,19 @@ const AudioPlayer = ({ audioSrc }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioPlayer = useRef(null);
+  const [Backalbum, setBackAlbum] = React.useState([]);
+
+  const playMusic = (id) => {axios.get(`http://artpro.world:8080/api/v1/boards/${id}`, {
+    headers: {
+      Authorization: `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzc3NzQG5hdmVyLmNvbSIsImlkIjoxNywiYXV0aCI6IlJPTEVfQVJUSVNUIiwiZXhwIjoxNzEyMTI0ODY1fQ.BNF8W9rysREk9vYBJ30HrrssBc9ZstXVd-AWfXMzNu_TwZFh9FBXcxpbQQyx2BzCFa-k9MIhikQor1i5fuDn_A`,
+    },
+  })
+  .then((res) => {
+    const Backalbum = res.data;
+    setBackAlbum(Backalbum);
+  }
+  );
+  }
 
   const togglePlay = () => {
     if (isPlaying) {
