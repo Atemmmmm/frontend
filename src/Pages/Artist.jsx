@@ -5,7 +5,6 @@ import './Album.css';
 import AlbumCardStyles from '../Components/AlbumCardStyles';
 import MusicPlayer from '../Components/MusicPlayer';
 import {Link, useNavigate } from "react-router-dom";
-import audioTest from '../Components/audio/audioTest.m4a';
 import Paging from '../Components/Paging';
 import LikeButton from '../Components/LikeButton';
 import { BiMessageSquareDetail } from "react-icons/bi";
@@ -236,7 +235,7 @@ export default function Main() {
   /*앨범 뒷쪽 연동 - 음원 등록자, 음원, 좋아요 갯수 */
   const albumBack = (id) => {axios.get(`http://artpro.world:8080/api/v1/boards/${id}`, {
     headers: {
-      Authorization: `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjM0QG5hdmVyLmNvbSIsImlkIjo2LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTQ3MTMyODV9.N0tNq5vvsvjIJqcVB2cG05OwpKLQaEQ1VihL-uOuOXEL3dDmVGYJWDW746FM1jHH-mYMuazn4XVPHVvvhbcCww`,
+      Authorization: `Bearer `,
     },
   })
   .then((res) => {
@@ -249,7 +248,7 @@ export default function Main() {
   /*앨범 앞쪽 연동 - 노래 제목, 커버 사진 */
   const albumFront = (selectedGenre) => {axios.get(`http://artpro.world:8080/api/v1/boards?page=0&size=8&sort=string&category=ARTIST&orderCriteria=likeCount&genre=${selectedGenre}`, {
     headers: {
-      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjM0QG5hdmVyLmNvbSIsImlkIjo2LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTQ3MTMyODV9.N0tNq5vvsvjIJqcVB2cG05OwpKLQaEQ1VihL-uOuOXEL3dDmVGYJWDW746FM1jHH-mYMuazn4XVPHVvvhbcCww`,
+      Authorization: `Bearer `,
     },
   })
   .then((res, genreList) => {

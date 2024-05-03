@@ -193,6 +193,7 @@ const ChatButton = styled.div`
 
 export default function Main() {
   const [cardStates, setCardStates] = useState(new Array(8).fill(false));
+  const [selectedCardIndex, setSelectedCardIndex] = useState(null);
   const [genreStates, setGenreStates] = useState(new Array(4).fill(false));
   const [isProducerMenuOpen, setIsProducerMenuOpen] = useState(false);
   const [isArtistMenuOpen, setIsArtistMenuOpen] = useState(false);
@@ -217,9 +218,9 @@ export default function Main() {
   }
 
   /*앨범 앞쪽 연동 - 노래 제목, 커버 사진 */
-  const albumFront = (selectedGenre) => {axios.get(`http://artpro.world:8080/api/v1/boards?page=0&size=8&sort=string&category=ARTIST&orderCriteria=likeCount&genre=${selectedGenre}`, {
+  const albumFront = (selectedGenre) => {axios.get(`http://artpro.world:8080/api/v1/boards?page=0&size=8&sort=string&category=ALL&orderCriteria=likeCount&genre=${selectedGenre}`, {
     headers: {
-      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzc3NzQG5hdmVyLmNvbSIsImlkIjo0LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTIxNDgzODh9.1HVW9sYQMsZJ4BOjjj5H9BitcXFOTIXm4Of7AqpN9DjJu4ttnMk05qC5f3OLxyY7AV5o7PgwcTEScIHPJqWEwA`,
+      Authorization: `Bearer `,
     },
   })
   .then((res, genreList) => {
@@ -264,17 +265,29 @@ export default function Main() {
   };
 
   /* 카드 앞에서 뒤로 뒤집을 때 */
-  const handleCardClick = (index) => {
-    const newCardStates = [...cardStates];
-    newCardStates[index] = !newCardStates[index];
-    setCardStates(newCardStates);
+  const handleCardClick = (index, id) => {
+    if (selectedCardIndex !== null) {
+      const updatedStates = [...cardStates];
+      updatedStates[selectedCardIndex] = false;
+      setCardStates(updatedStates);
+      setSelectedCardIndex(null);
+      return;
+    }
+
+  /* 선택된 카드 뒤집기 */
+  const updatedStates = [...cardStates];
+  updatedStates[index] = true;
+  setCardStates(updatedStates);
+  setSelectedCardIndex(index);
+  albumBack(id);
   };
 
   /* 카드 뒤에서 앞으로 뒤집을 때 */
   const handleCardClose = (index) => {
-    const newCardStates = [...cardStates];
-    newCardStates[index] = false;
-    setCardStates(newCardStates);
+    const updatedStates = [...cardStates];
+    updatedStates[index] = false;
+    setCardStates(updatedStates);
+    setSelectedCardIndex(null);
   };
 
   /* 아티스트 하위 장르 선택하기 */
@@ -398,7 +411,7 @@ export default function Main() {
                     {cardStates[index] && (
                       <>
                         <MusicPlayer audioSrc={Backalbum.songUrl} />
-                        <LikeButton/>
+                        <LikeButton Backalbum={Backalbum} />                      
                         <Link to="/Chat">
                           <ChatButton>
                             <BiMessageSquareDetail />

@@ -16,7 +16,7 @@ const LikedButton = styled.div`
 const LikeCounter = styled.div`
   font-size: 10px;
   margin-top: -3px;
-  margin-left: 6px;
+  margin-left: 7px;
 `;
 
 
@@ -32,11 +32,11 @@ const LikeButton = ({ Backalbum }) => {
         await axios.delete(`http://artpro.world:8080/api/v1/hearts/${heartId}`,
         {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjM0QG5hdmVyLmNvbSIsImlkIjo2LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTQ3MTMyODV9.N0tNq5vvsvjIJqcVB2cG05OwpKLQaEQ1VihL-uOuOXEL3dDmVGYJWDW746FM1jHH-mYMuazn4XVPHVvvhbcCww`,
+            Authorization: `Bearer `,
           },
         });
         setLiked(false);
-        setLikeCount(prevCount => prevCount - 1);
+                setLikeCount(prevCount => prevCount - 1);
         console.log('Dislike pressed successfully');
       } else {
         await axios.post(`http://artpro.world:8080/api/v1/hearts?boardId=${Backalbum.id}`,
@@ -45,12 +45,12 @@ const LikeButton = ({ Backalbum }) => {
           }, 
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjM0QG5hdmVyLmNvbSIsImlkIjo2LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTQ3MTMyODV9.N0tNq5vvsvjIJqcVB2cG05OwpKLQaEQ1VihL-uOuOXEL3dDmVGYJWDW746FM1jHH-mYMuazn4XVPHVvvhbcCww`,
+              Authorization: `Bearer `,
             },
           }
         );
         setLiked(true);
-        setLikeCount(prevCount => prevCount + 1);
+                setLikeCount(prevCount => prevCount + 1);
         console.log('Like pressed successfully');
       }
     } catch (error) {
@@ -68,14 +68,13 @@ const LikeButton = ({ Backalbum }) => {
     try {
       const response = await axios.get(`http://artpro.world:8080/api/v1/hearts?boardId=${Backalbum.id}`, {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjM0QG5hdmVyLmNvbSIsImlkIjo2LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTQ3MTMyODV9.N0tNq5vvsvjIJqcVB2cG05OwpKLQaEQ1VihL-uOuOXEL3dDmVGYJWDW746FM1jHH-mYMuazn4XVPHVvvhbcCww`,
+          Authorization: `Bearer `,
         },
       });
-      console.log(response.data.likeCount);
       const heartId = response.data.heartId;
       const fetchedLikeCount = response.data.likeCount; 
       setLikeCount(fetchedLikeCount);
-      return heartId;     
+            return heartId;     
     } catch (error) {
       console.error('Error fetching like count:', error);
     }
