@@ -9,6 +9,7 @@ import Update from "./Pages/Update";
 import Edit from "./Pages/Edit";
 import Chat from "./Pages/Chat";
 import socket from "./server";
+import MemberInfo from "./Pages/MemberInfo";
 import styled from 'styled-components';
 import './App.css';
 import video from './video/background_video.mp4';
@@ -43,6 +44,7 @@ function App() {
               <Route path="/Chat" element = {<Chat/>}/>
               <Route path="/Artist" element = {<Artist/>}/>
               <Route path="/Producer" element = {<Producer/>}/>
+              <Route path="/MyPage" element = {<MemberInfo/>}/>
             </Routes>
      </>
   );
