@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Header from '../Components/Header';
 import './Album.css'; 
 import AlbumCardStyles from '../Components/AlbumCardStyles';
-import {useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 const AlbumTitle = styled.div`
@@ -24,23 +24,29 @@ const MemberInfoContainer = styled.div`
   left: 100px;
 `;
 
-const CircularImage = styled.div`
+const MemberImage = styled.div`
   text-decoration-line: none;
-  width: 150px; 
-  height: 150px; 
+  width: 180px; 
+  height: 180px; 
   border-radius: 50%;
   border: none;
 `;
 
-const ImageWithText = styled.div`
-  text-align: center; /* 텍스트를 가운데 정렬합니다. */
-  width: 150px;
+const EditButton = styled(Link)`
+  margin-left: 80px;
+  color: white;
+  text-decoration: none;
+  background-color: #333232;
+  padding: 5px 8px;
+  border-radius: 30%;
+  font-weight: bold; 
 `;
 
 const NickName = styled.p`
   font-weight: bold;
-  font-size: 25px; /* 폰트 크기 */
-  color: white; /* 텍스트 색상 */
+  font-size: 25px; 
+  color: white; 
+  text-align: center;
 `;
 
 /* 내가 올린 곡의 grid와 버튼을 감싸는 컨테이너 */
@@ -129,12 +135,11 @@ export default function Main() {
         <Header />
         
         <MemberInfoContainer>
-          <ImageWithText imageUrl="/image/cute.jpg">
-            <CircularImage>
+            <MemberImage imageUrl="/image/cute.jpg">
               <img style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-            </CircularImage>
+            </MemberImage>
+            <EditButton to="/Edit">Edit</EditButton>
             <NickName> YeonJinX </NickName>
-          </ImageWithText>
         </MemberInfoContainer>
 
         <div>
@@ -143,6 +148,7 @@ export default function Main() {
           </AlbumTitle> 
           <UploadSongContainer>
             {isFirstPage ? null : <PrevSongbutton> </PrevSongbutton>} 
+
             <AlbumGrid>
               {albumList && albumList.map((albums, index) => (
                 <AlbumCardStyles key={index}>
@@ -161,6 +167,7 @@ export default function Main() {
                 </AlbumCardStyles>
               ))}
             </AlbumGrid>
+
             <NextSongbutton> </NextSongbutton>
           </UploadSongContainer>
         </div>
@@ -170,6 +177,7 @@ export default function Main() {
             <div style={{ width: "105%", margin: "0" }}> </div>
             <h4>내가 좋아요 누른 노래</h4>
           </AlbumTitle>  
+
           <LikedSongContainer>
             <AlbumGrid>
               {albumList && albumList.map((albums, index) => (
