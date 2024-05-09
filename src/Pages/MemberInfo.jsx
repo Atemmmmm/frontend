@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Header from '../Components/Header';
 import './Album.css'; 
+import DropdownMenu from '../Components/DropDownMenu';
 import AlbumCardStyles from '../Components/AlbumCardStyles';
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -29,7 +30,6 @@ const MemberImage = styled.div`
   width: 180px; 
   height: 180px; 
   border-radius: 50%;
-  border: none;
 `;
 
 const EditButton = styled(Link)`
@@ -66,11 +66,10 @@ const LikedSongContainer = styled.div`
 const AlbumGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-row: repeat(1, 1fr);
   gap: 30px; 
   height: 190px;
-  margin-left: 300px;
-  margin-top: 80px;
+  margin-left: 350px;
+  margin-top: 25px;
   text-align: center;
 `;
 
@@ -81,7 +80,7 @@ const NextSongbutton = styled.div`
   font-size: 50px;
   text-align : right;
   cursor: pointer;
-  margin-top: -15px;
+  margin-top: 50px;
   margin-right: 40px;
 
   &::after {
@@ -130,13 +129,38 @@ export default function Main() {
   const [currentPage, setCurrentPage] = useState(1);
   const isFirstPage = currentPage === 1;
 
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedCardIndex, setSelectedCardIndex] = useState(null);
+  
+
+  const handleClick = (event, index) => {
+    event.preventDefault();
+    const clickX = event.clientX;
+    const clickY = event.clientY;
+    setMenuPosition({ x: clickX, y: clickY });
+    setIsMenuOpen(!isMenuOpen);
+    setSelectedCardIndex(index); // 클릭한 카드의 인덱스를 상태에 저장합니다.
+  };
+
+  const handleCloseMenu = () => {
+    setIsMenuOpen(false);
+  };
+
+  const dummyData = [
+    { title: 'Album 1', coverUrl: 'album1.jpg' },
+    { title: 'Album 2', coverUrl: 'album2.jpg' },
+    { title: 'Album 3', coverUrl: 'album2.jpg' },
+    { title: 'Album 4', coverUrl: 'album2.jpg' }
+  ];
+
   return (
         <div style={{minHeight: '100vh', padding: '20px'}}>
         <Header />
         
         <MemberInfoContainer>
             <MemberImage imageUrl="/image/cute.jpg">
-              <img style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+              <img style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
             </MemberImage>
             <EditButton to="/Edit">Edit</EditButton>
             <NickName> YeonJinX </NickName>
@@ -150,23 +174,26 @@ export default function Main() {
             {isFirstPage ? null : <PrevSongbutton> </PrevSongbutton>} 
 
             <AlbumGrid>
-              {albumList && albumList.map((albums, index) => (
+              {dummyData.map((album, index) => (
                 <AlbumCardStyles key={index}>
-                  <div className={`album-card ${cardStates[index] ? 'flipped' : ''}`}>
-                    <div className="front">
+                  <div className="album-card">
+                    <div className="front" onClick={(event) => handleClick(event, index)}>
                       <AlbumCardContent>
                         <img
                           className="album-image"
-                          src={albums.coverUrl}
-                          alt={albums.title}
+                          src={album.coverUrl}
+                          alt={album.title}
                         />
-                        <AlbumName isLong={albums.title.length > 12}>{albums.title}</AlbumName>
+                        <AlbumName isLong={album.title.length > 12}>{album.title}</AlbumName>
                       </AlbumCardContent>
                     </div>
                   </div>
+                  {isMenuOpen && selectedCardIndex === index && ( 
+                    <DropdownMenu onClose={handleCloseMenu} />
+                  )}
                 </AlbumCardStyles>
               ))}
-            </AlbumGrid>
+              </AlbumGrid>
 
             <NextSongbutton> </NextSongbutton>
           </UploadSongContainer>
@@ -180,23 +207,26 @@ export default function Main() {
 
           <LikedSongContainer>
             <AlbumGrid>
-              {albumList && albumList.map((albums, index) => (
+              {dummyData.map((album, index) => (
                 <AlbumCardStyles key={index}>
-                  <div className={`album-card ${cardStates[index] ? 'flipped' : ''}`}>
-                    <div className="front">
+                  <div className="album-card">
+                    <div className="front" onClick={(event) => handleClick(event, index)}>
                       <AlbumCardContent>
                         <img
                           className="album-image"
-                          src={albums.coverUrl}
-                          alt={albums.title}
+                          src={album.coverUrl}
+                          alt={album.title}
                         />
-                        <AlbumName isLong={albums.title.length > 12}>{albums.title}</AlbumName>
+                        <AlbumName isLong={album.title.length > 12}>{album.title}</AlbumName>
                       </AlbumCardContent>
                     </div>
                   </div>
+                  {isMenuOpen && selectedCardIndex === index && ( 
+                    <DropdownMenu onClose={handleCloseMenu} />
+                  )}
                 </AlbumCardStyles>
               ))}
-            </AlbumGrid>
+              </AlbumGrid>
             <NextSongbutton>  </NextSongbutton>
           </LikedSongContainer>
         </div>

@@ -3,8 +3,8 @@ import styled from 'styled-components';
 const AlbumCard = styled.div`
   position: relative;
   perspective: 1000px;
-  width: 225px;
-  height: 225px;
+  width: 210px;
+  height: 210px;
   margin: 10px auto;
   cursor: pointer;
 
