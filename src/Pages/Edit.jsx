@@ -108,6 +108,21 @@ const BackgroundVideo = styled.div`
 
 export default function Edit() {
 
+
+  // axios
+  //       .put("http://artpro.world:8080/api/v1/boards/"+props.bordId+"?title=" + Title + "&genre=" + Genre, contentsData,
+  //       {
+  //       headers:{
+  //         "Content-type": "multipart/form-data",
+  //         Authorization: `Bearer ${token}`,
+  //       }})
+  //       .then((res) => {
+  //         console.log(res)
+  //       })
+  //       .catch((err) => {
+  //         console.error(err);
+  //     })
+      
   return (
     <MainBackground>
         <Header/>
@@ -145,7 +160,7 @@ export default function Edit() {
                 background="#333232"
                 width="8rem"
                 height="3rem"
-                name="Upload"
+                name="Edit"
                 borderRadius="2rem" 
                 fontWeight={"bold"}
                 fontSize={"19px"}

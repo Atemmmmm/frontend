@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback, onConcat } from 'react';
-import { Link,useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import * as StompJs from '@stomp/stompjs';
 import styled from 'styled-components';
 import Header from '../Components/Header';
@@ -11,6 +11,7 @@ import { ScrollBar } from '../Components/ScrollBar';
 import Clock from 'react-live-clock';
 import { CiImageOn } from "react-icons/ci";
 import { MdOutlineAudioFile } from "react-icons/md";
+import axios from 'axios';
 
 
 const MainBackground = styled.div`
@@ -19,7 +20,6 @@ const MainBackground = styled.div`
   height:100vh;
 
 `;
-
 const MainBox = styled.div`
   width: 80%;
   min-width: 480px;

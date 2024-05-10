@@ -93,7 +93,7 @@ export default function Login(props) {
     };
     
     axios
-    .post("http://artpro.world:8080/api/v1/members", body)
+    .post(`http://artpro.world:8080/api/v1/members`, body)
     
     .then((response) => {
       console.log(response);
@@ -101,7 +101,7 @@ export default function Login(props) {
         const token = response.data;
         localStorage.setItem("accessToken", token.accessToken);
         dispatch(loginUser());
-        console.log("로그인 성공!");
+        alert("로그인 성공!");
         navigate("/");
         localStorage.setItem("isLoggedIn", "1");
       } else if (response.status === 400) {
