@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../Components/Header';
 import './Album.css'; 
@@ -14,7 +14,7 @@ const AlbumTitle = styled.div`
   text-align: left;
   padding: 0 22rem;
   margin: 0 auto;
-  margin-top: 70px;
+  margin-top: 50px;
   color: white;
   align-item: left;
 `;
@@ -69,7 +69,7 @@ const AlbumGrid = styled.div`
   gap: 30px; 
   height: 190px;
   margin-left: 350px;
-  margin-top: 25px;
+  margin-top: 15px;
   text-align: center;
 `;
 
@@ -123,8 +123,10 @@ const AlbumName = styled.div`
 `;
 
 export default function Main() {
-  const [cardStates, setCardStates] = useState(new Array(8).fill(false));
-  const [albumList, setAlbumList] = React.useState([]);
+  const [uploadedAlbumList, setuploadedAlbumList] = React.useState([]);
+  const [likedAlbumList, setlikedAlbumList] = React.useState([]);
+  const [memberInfo, setmemberInfo] = React.useState([]);
+
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const isFirstPage = currentPage === 1;
@@ -132,7 +134,6 @@ export default function Main() {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
-  
 
   const handleClick = (event, index) => {
     event.preventDefault();
@@ -147,23 +148,78 @@ export default function Main() {
     setIsMenuOpen(false);
   };
 
-  const dummyData = [
-    { title: 'Album 1', coverUrl: 'album1.jpg' },
-    { title: 'Album 2', coverUrl: 'album2.jpg' },
-    { title: 'Album 3', coverUrl: 'album2.jpg' },
-    { title: 'Album 4', coverUrl: 'album2.jpg' }
-  ];
+  useEffect(( )=>{
+    /* 사용자 닉네임과 사진 가져오는 함수 */
+  const getMemberInfo = () => {
+    const token = localStorage.getItem("accessToken");
+    axios.get(`http://artpro.world:8080/api/v1/members`, {
+      headers:{
+        "Authorization": `Bearer ${token}`,
+      }
+    })
+    .then((res) => {
+      const memberInfo = res.data;
+      setmemberInfo(memberInfo);
+      })
+      .catch(error => {
+        console.error('Error fetching Infos:', error);
+      });
+    }
+  void getMemberInfo();
+  }
+)
+
+  useEffect(( )=>{
+    /* 업로드한 앨범 연동 함수 - 노래 제목, 커버 사진 */
+  const uploadedalbum = () => {
+    const token = localStorage.getItem("accessToken");
+    axios.get(`http://artpro.world:8080/api/v1/members/boards?page=0&size=4&sort=string`, {
+    headers:{
+      "Authorization": `Bearer ${token}`,
+    }
+  })
+  .then((res) => {
+    const uploadedAlbumList = res.data.content;
+    setuploadedAlbumList(uploadedAlbumList);
+    })
+    .catch(error => {
+      console.error('Error fetching albums:', error);
+    });
+  }
+  void uploadedalbum();
+  }, []);
+
+  useEffect(( )=>{
+  /* 좋아요 누른 앨범 연동 - 노래 제목, 커버 사진 */
+  const likedAlbum = () => {
+    const token = localStorage.getItem("accessToken");
+    axios.get(`http://artpro.world:8080/api/v1/members/hearts?page=0&size=4&sort=string`,{
+    headers:{
+      "Authorization": `Bearer ${token}`,
+    }
+  })
+  .then((res) => {
+    const likedAlbumList = res.data.content;
+    setlikedAlbumList(likedAlbumList);
+    })
+    .catch(error => {
+      console.error('Error fetching albums:', error);
+    });
+  }
+  void likedAlbum();
+  }, []);
 
   return (
         <div style={{minHeight: '100vh', padding: '20px'}}>
         <Header />
         
         <MemberInfoContainer>
-            <MemberImage imageUrl="/image/cute.jpg">
-              <img style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+            <MemberImage>
+              src={memberInfo.profileImage}
             </MemberImage>
+          
             <EditButton to="/Edit">Edit</EditButton>
-            <NickName> YeonJinX </NickName>
+            <NickName>{memberInfo.nickname}</NickName>
         </MemberInfoContainer>
 
         <div>
@@ -174,17 +230,17 @@ export default function Main() {
             {isFirstPage ? null : <PrevSongbutton> </PrevSongbutton>} 
 
             <AlbumGrid>
-              {dummyData.map((album, index) => (
+              {uploadedAlbumList && uploadedAlbumList.map((albums, index) => (
                 <AlbumCardStyles key={index}>
                   <div className="album-card">
                     <div className="front" onClick={(event) => handleClick(event, index)}>
                       <AlbumCardContent>
                         <img
                           className="album-image"
-                          src={album.coverUrl}
-                          alt={album.title}
+                          src={albums.coverUrl}
+                          alt={albums.title}
                         />
-                        <AlbumName isLong={album.title.length > 12}>{album.title}</AlbumName>
+                        <AlbumName isLong={albums.title.length > 12}>{albums.title}</AlbumName>                      
                       </AlbumCardContent>
                     </div>
                   </div>
@@ -207,17 +263,17 @@ export default function Main() {
 
           <LikedSongContainer>
             <AlbumGrid>
-              {dummyData.map((album, index) => (
+              {likedAlbumList && likedAlbumList.map((albums, index) => (
                 <AlbumCardStyles key={index}>
                   <div className="album-card">
                     <div className="front" onClick={(event) => handleClick(event, index)}>
                       <AlbumCardContent>
                         <img
                           className="album-image"
-                          src={album.coverUrl}
-                          alt={album.title}
+                          src={albums.coverUrl}
+                          alt={albums.title}
                         />
-                        <AlbumName isLong={album.title.length > 12}>{album.title}</AlbumName>
+                        <AlbumName isLong={albums.title.length > 12}>{albums.title}</AlbumName>                      
                       </AlbumCardContent>
                     </div>
                   </div>
@@ -227,6 +283,7 @@ export default function Main() {
                 </AlbumCardStyles>
               ))}
               </AlbumGrid>
+
             <NextSongbutton>  </NextSongbutton>
           </LikedSongContainer>
         </div>
