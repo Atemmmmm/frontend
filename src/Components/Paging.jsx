@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
+import axios from "axios";
 
 const StyledPaging = styled(ReactPaginate)`
   display: flex;
@@ -43,11 +44,31 @@ const StyledPaging = styled(ReactPaginate)`
 `;
 
 const Paging = ({ onPageChange, currentPage }) => {
-
-  const pageCount = 10; 
+  const [totalPages, setTotalPages] = useState(0);
+  const token = localStorage.getItem("accessToken");
+  
+  useEffect(( )=>{
+  const pages = (selectedGenre) => {
+    axios.get(`http://artpro.world:8080/api/v1/boards?page=${currentPage}&size=8&sort=string&category=ARTIST&orderCriteria=likeCount&genre=${selectedGenre}`, {
+    headers:{
+      "Authorization": `Bearer ${token}`,
+    }
+  })
+  .then((res) => {
+    const totalPages = res.data.totalPages;
+    console.log(totalPages);
+    setTotalPages(totalPages);
+    })
+  }
+  void pages();
+  }, []);
 
   const handlePageClick = ({ selected }) => {
     onPageChange({ selected });
+  };
+
+  const PageCountChange = ({ }) => {
+    setTotalPages(totalPages);
   };
 
   return (
@@ -56,7 +77,7 @@ const Paging = ({ onPageChange, currentPage }) => {
       nextLabel={'>'}
       breakLabel={'...'}
       breakClassName={'break-me'}
-      pageCount={pageCount}
+      pageCount={totalPages}
       marginPagesDisplayed={1}
       pageRangeDisplayed={3}
       onPageChange={handlePageClick}
