@@ -203,12 +203,13 @@ export default function Main() {
   const [Backalbum, setBackAlbum] = React.useState([]);
   const navigate = useNavigate();
   const [selectedGenreIndex, setSelectedGenreIndex] = useState(0);
+  const token = localStorage.getItem("accessToken");
 
   /*앨범 뒷쪽 연동 - 음원 등록자, 음원, 좋아요 갯수 */
   const albumBack = (id) => {axios.get(`http://artpro.world:8080/api/v1/boards/${id}`, {
-    headers: {
-      Authorization: `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzc3NzQG5hdmVyLmNvbSIsImlkIjo0LCJhdXRoIjoiUk9MRV9BUlRJU1QiLCJleHAiOjE3MTIxNDgzODh9.1HVW9sYQMsZJ4BOjjj5H9BitcXFOTIXm4Of7AqpN9DjJu4ttnMk05qC5f3OLxyY7AV5o7PgwcTEScIHPJqWEwA`,
-    },
+    headers:{
+      "Authorization": `Bearer ${token}`,
+    }
   })
   .then((res) => {
     const Backalbum = res.data;
@@ -218,10 +219,12 @@ export default function Main() {
   }
 
   /*앨범 앞쪽 연동 - 노래 제목, 커버 사진 */
-  const albumFront = (selectedGenre) => {axios.get(`http://artpro.world:8080/api/v1/boards?page=0&size=8&sort=string&category=ALL&orderCriteria=likeCount&genre=${selectedGenre}`, {
-    headers: {
-      Authorization: `Bearer `,
-    },
+  const albumFront = (selectedGenre) => {
+    console.log(currentPage);
+    axios.get(`http://artpro.world:8080/api/v1/boards?page=${currentPage}&size=8&sort=string&category=ALL&orderCriteria=likeCount&genre=${selectedGenre}`, {
+    headers:{
+      "Authorization": `Bearer ${token}`,
+    }
   })
   .then((res, genreList) => {
     const albumList = res.data.content;
@@ -241,6 +244,7 @@ export default function Main() {
   /* 페이징 */
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
+    albumFront();
     window.scrollTo(0, 0);
   };
 
