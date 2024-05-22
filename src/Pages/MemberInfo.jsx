@@ -68,8 +68,8 @@ const AlbumGrid = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 30px; 
   height: 190px;
-  margin-left: 350px;
   margin-top: 15px;
+  margin-left: 0px;
   text-align: center;
 `;
 
@@ -81,7 +81,7 @@ const NextSongbutton = styled.div`
   text-align : right;
   cursor: pointer;
   margin-top: 50px;
-  margin-right: 40px;
+  margin-right: 50px;
 
   &::after {
     content: ">" ;
@@ -90,8 +90,11 @@ const NextSongbutton = styled.div`
 
 const PrevSongbutton = styled.div`
   color: white;
+  font-weight: bold;
   border: none;
   font-size: 50px;
+  margin-top: 50px;
+  margin-left: 280px;
   cursor: pointer;
 
   &::before {
@@ -128,25 +131,33 @@ export default function Main() {
   const [memberInfo, setmemberInfo] = React.useState([]);
 
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const isFirstPage = currentPage === 1;
 
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
 
-  const handleClick = (event, index) => {
-    event.preventDefault();
-    const clickX = event.clientX;
-    const clickY = event.clientY;
-    setMenuPosition({ x: clickX, y: clickY });
-    setIsMenuOpen(!isMenuOpen);
-    setSelectedCardIndex(index); // 클릭한 카드의 인덱스를 상태에 저장합니다.
-  };
-
-  const handleCloseMenu = () => {
-    setIsMenuOpen(false);
-  };
+  /* 페이지네이션을 위한 현재 페이지 연동 */
+    const pageChange = () => {
+      const token = localStorage.getItem("accessToken");
+      axios.get(`http://artpro.world:8080/api/v1/members/boards?page=${currentPage}&size=4&sort=string`, {
+      headers:{
+        "Authorization": `Bearer ${token}`,
+      }
+    })
+    .then((res) => {
+      const uploadedAlbumList = res.data.content;
+      setuploadedAlbumList(uploadedAlbumList);
+      })
+      .catch(error => {
+        console.error('Error fetching uploaded albums:', error);
+      }
+    )
+    .catch(error => {
+      console.error('Error fetching Pages:', error);
+    });
+  } 
 
   useEffect(( )=>{
     /* 사용자 닉네임과 사진 가져오는 함수 */
@@ -173,7 +184,7 @@ export default function Main() {
     /* 업로드한 앨범 연동 함수 - 노래 제목, 커버 사진 */
   const uploadedalbum = () => {
     const token = localStorage.getItem("accessToken");
-    axios.get(`http://artpro.world:8080/api/v1/members/boards?page=0&size=4&sort=string`, {
+    axios.get(`http://artpro.world:8080/api/v1/members/boards?page=${currentPage}&size=4&sort=string`, {
     headers:{
       "Authorization": `Bearer ${token}`,
     }
@@ -181,9 +192,10 @@ export default function Main() {
   .then((res) => {
     const uploadedAlbumList = res.data.content;
     setuploadedAlbumList(uploadedAlbumList);
+    isFirstPage(true);
     })
     .catch(error => {
-      console.error('Error fetching albums:', error);
+      console.error('Error fetching uploaded albums:', error);
     });
   }
   void uploadedalbum();
@@ -193,7 +205,7 @@ export default function Main() {
   /* 좋아요 누른 앨범 연동 - 노래 제목, 커버 사진 */
   const likedAlbum = () => {
     const token = localStorage.getItem("accessToken");
-    axios.get(`http://artpro.world:8080/api/v1/members/hearts?page=0&size=4&sort=string`,{
+    axios.get(`http://artpro.world:8080/api/v1/members/hearts?page=${currentPage}&size=4&sort=string`,{
     headers:{
       "Authorization": `Bearer ${token}`,
     }
@@ -203,11 +215,34 @@ export default function Main() {
     setlikedAlbumList(likedAlbumList);
     })
     .catch(error => {
-      console.error('Error fetching albums:', error);
+      console.error('Error fetching liked albums:', error);
     });
   }
   void likedAlbum();
   }, []);
+
+  const changeNextPage = () => {
+    setCurrentPage(currentPage + 1);
+    pageChange();
+  }
+
+  const changePrevPage = () => {
+    setCurrentPage(currentPage - 1);
+    pageChange();
+  }
+
+  const handleClick = (event, index) => {
+    event.preventDefault();
+    const clickX = event.clientX;
+    const clickY = event.clientY;
+    setMenuPosition({ x: clickX, y: clickY });
+    setIsMenuOpen(!isMenuOpen);
+    setSelectedCardIndex(index); 
+  };
+
+  const handleCloseMenu = () => {
+    setIsMenuOpen(false);
+  };
 
   return (
         <div style={{minHeight: '100vh', padding: '20px'}}>
@@ -215,7 +250,7 @@ export default function Main() {
         
         <MemberInfoContainer>
             <MemberImage>
-              src={memberInfo.profileImage}
+              {memberInfo.profileImage}
             </MemberImage>
           
             <EditButton to="/Edit">Edit</EditButton>
@@ -227,7 +262,7 @@ export default function Main() {
             <h4> 내가 업로드한 노래 </h4>
           </AlbumTitle> 
           <UploadSongContainer>
-            {isFirstPage ? null : <PrevSongbutton> </PrevSongbutton>} 
+            {isFirstPage ? null : <PrevSongbutton onClick={changePrevPage}> </PrevSongbutton>} 
 
             <AlbumGrid>
               {uploadedAlbumList && uploadedAlbumList.map((albums, index) => (
@@ -251,7 +286,7 @@ export default function Main() {
               ))}
               </AlbumGrid>
 
-            <NextSongbutton> </NextSongbutton>
+            <NextSongbutton onClick={changeNextPage} > </NextSongbutton>
           </UploadSongContainer>
         </div>
 

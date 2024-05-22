@@ -220,7 +220,6 @@ export default function Main() {
 
   /*앨범 앞쪽 연동 - 노래 제목, 커버 사진 */
   const albumFront = (selectedGenre) => {
-    console.log(currentPage);
     axios.get(`http://artpro.world:8080/api/v1/boards?page=${currentPage}&size=8&sort=string&category=ALL&orderCriteria=likeCount&genre=${selectedGenre}`, {
     headers:{
       "Authorization": `Bearer ${token}`,
